@@ -1,37 +1,37 @@
-'use client';
+'use client'
 
-import { useState } from 'react';
-import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
+import { useState } from 'react'
+import { Input } from '@/components/ui/input'
+import { Button } from '@/components/ui/button'
 
 interface Task {
-  id: number;
-  text: string;
+  id: number
+  text: string
 }
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([]);
-  const [newTaskText, setNewTaskText] = useState('');
+  const [tasks, setTasks] = useState<Task[]>([])
+  const [newTaskText, setNewTaskText] = useState('')
 
   const handleAddTask = () => {
-    if (newTaskText.trim() === '') return;
+    if (newTaskText.trim() === '') return
     const newTask: Task = {
       id: Date.now(), // Use timestamp as a simple unique ID for now
       text: newTaskText.trim(),
-    };
-    setTasks([...tasks, newTask]);
-    setNewTaskText(''); // Clear input after adding
-  };
+    }
+    setTasks([...tasks, newTask])
+    setNewTaskText('') // Clear input after adding
+  }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setNewTaskText(event.target.value);
-  };
+    setNewTaskText(event.target.value)
+  }
 
   const handleKeyDown = (event: React.KeyboardEvent<HTMLInputElement>) => {
     if (event.key === 'Enter') {
-      handleAddTask();
+      handleAddTask()
     }
-  };
+  }
 
   return (
     <main className="container mx-auto p-4">
@@ -55,5 +55,5 @@ export default function Home() {
         ))}
       </ul>
     </main>
-  );
+  )
 }

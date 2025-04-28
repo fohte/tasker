@@ -3,10 +3,10 @@
 ## 1. Phase 1: Core Setup & Task List
 
 ### 1.1. Infrastructure & Project Setup
-- [ ] 1.1.1. Configure Cloudflare D1 database instance.
-- [ ] 1.1.2. Set up Drizzle ORM configuration (`drizzle.config.ts`, connection setup).
-- [ ] 1.1.3. Define initial database schema (`schema.ts`) for `tasks` table (id, title, description, status, created_at, updated_at).
-- [ ] 1.1.4. Run initial Drizzle migration to create the `tasks` table in D1.
+- [x] 1.1.1. Configure Cloudflare D1 database instance.
+- [x] 1.1.2. Set up Drizzle ORM configuration (`drizzle.config.ts`, connection setup).
+- [x] 1.1.3. Define initial database schema (`schema.ts`) for `tasks` table (id, title, description, status, created_at, updated_at).
+- [x] 1.1.4. Run initial Drizzle migration to create the `tasks` table in D1.
 - [ ] 1.1.5. Configure Cloudflare Access for authentication (basic setup).
 - [ ] 1.1.6. Set up basic API structure (decide between Next.js API Routes or Cloudflare Workers for the backend logic).
 

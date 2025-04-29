@@ -19,19 +19,55 @@
 ## サイトマップ
 
 ```
-/                        # トップページ / タスク一覧等 inbox
-├── tasks/               # 404
-│   ├── [taskId]         # タスク詳細
-│   └── labels/          # ラベル一覧
-└── settings/            # ? (WIP)
+/                          # inbox
+├── tasks/                 # タスク一覧
+│   └── [taskId]           # タスク詳細 (モーダル)
+├── issues/                # issue 一覧
+│   └── [issueId]          # issue 詳細
+├── labels/                # グローバルなラベル一覧・管理
+│   └── [labelId]          # 特定ラベルが付いたタスク一覧 (グローバル)
+└── settings/              # 設定ページ
 ```
 
-## ユーザーフロー
+## テーブル
 
 ```mermaid
-graph TD
+erDiagram
+    tasks {
+        text id PK
+        text title
+        text state
+        timestamp dueAt
+        timestamp createdAt
+        timestamp updatedAt
+        timestamp closedAt
+    }
+    labels {
+        integer id PK
+        text name
+        text color
+        timestamp createdAt
+    }
+    taskLabels {
+        integer id PK
+        text taskId FK
+        integer labelId FK
+    }
+    issues {
+        integer id PK
+        text taskId FK
+        text body
+    }
+    taskLinks {
+        integer id PK
+        text parentId FK
+        text childId FK
+        text relation
+    }
 
-    task_list[タスク一覧]
-    task_list -->|タスクを選択| task_detail[タスク詳細]
-    task_list -->|タスクを追加| task_create["タスク作成 (モーダル)"]
+    tasks ||--o{ taskLabels : "has"
+    labels ||--o{ taskLabels : "has"
+    tasks ||--o| issues : "extends"
+    tasks ||--o{ taskLinks : "parent"
+    tasks ||--o{ taskLinks : "child"
 ```

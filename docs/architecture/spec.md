@@ -71,3 +71,9 @@ erDiagram
     tasks ||--o{ taskLinks : "parent"
     tasks ||--o{ taskLinks : "child"
 ```
+
+- `tasks`: タスク
+- `issues`: issue (GitHub issue 的にチケット化したタスク)
+- `labels`: issue に紐付けるラベル
+- `taskLabels`: タスクとラベルの中間テーブル
+- `taskLinks`: タスクの親子関係を表すテーブル

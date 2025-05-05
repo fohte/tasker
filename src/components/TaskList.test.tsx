@@ -18,6 +18,7 @@ describe('TaskList Component', () => {
       data: undefined,
       error: undefined,
       isLoading: true,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -30,6 +31,7 @@ describe('TaskList Component', () => {
       data: undefined,
       error: new Error('Failed to fetch'),
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -43,6 +45,7 @@ describe('TaskList Component', () => {
       data: { tasks: [] },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -76,6 +79,7 @@ describe('TaskList Component', () => {
       data: { tasks: mockTasks },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -90,6 +94,7 @@ describe('TaskList Component', () => {
       data: { tasks: [] },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -108,6 +113,7 @@ describe('TaskList Component', () => {
       data: { tasks: [] },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -125,6 +131,7 @@ describe('TaskList Component', () => {
       data: { tasks: [] },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     
@@ -154,6 +161,7 @@ describe('TaskList Component', () => {
       data: { tasks: mockTasks },
       error: undefined,
       isLoading: false,
+      isValidating: false,
       mutate: vi.fn(),
     })
     

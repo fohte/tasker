@@ -3,13 +3,25 @@ import { getRequestContext } from '@cloudflare/next-on-pages';
 import { eq, lt, ne, like, and } from 'drizzle-orm';
 import { tasks, labels, taskLabels, taskLinks } from './schema';
 
+// Cloudflare環境の型定義
+interface Env {
+  DB: D1Database;
+}
+
+// Cloudflareの環境変数を拡張
+declare global {
+  interface CloudflareEnv extends Env {}
+  var __env__: Partial<Env> | undefined;
+}
+
 // Utility function to get the D1 binding safely
 function getD1Binding(): D1Database {
   try {
     // For Pages Functions, use getRequestContext
     const context = getRequestContext();
-    if (context?.env?.DB) {
-      return context.env.DB;
+    const env = context?.env as Env | undefined;
+    if (env?.DB) {
+      return env.DB;
     }
   } catch (e) {
     // Ignore errors if not in a Pages Function context
@@ -61,13 +73,13 @@ export const taskQueries = {
   },
   
   // ステータスによるタスクフィルタリング
-  getTasksByStatus: async (status: string) => {
+  getTasksByStatus: async (status: 'todo' | 'in_progress' | 'done' | 'cancelled') => {
     return await db.select().from(tasks).where(eq(tasks.state, status));
   },
   
   // 期限切れのタスク取得
   getOverdueTasks: async () => {
-    const now = Date.now();
+    const now = new Date();
     return await db
       .select()
       .from(tasks)
@@ -81,13 +93,13 @@ export const taskQueries = {
   },
   
   // タスク作成
-  createTask: async (taskData: any) => {
+  createTask: async (taskData: typeof tasks.$inferInsert) => {
     await db.insert(tasks).values(taskData);
     return taskData;
   },
   
   // タスク更新
-  updateTask: async (id: string, updateData: any) => {
+  updateTask: async (id: string, updateData: Partial<typeof tasks.$inferInsert>) => {
     await db.update(tasks).set(updateData).where(eq(tasks.id, id));
     return await db.select().from(tasks).where(eq(tasks.id, id)).get();
   },
@@ -139,12 +151,16 @@ export const taskLinkQueries = {
     const childLinks = await db
       .select({ childId: taskLinks.childId })
       .from(taskLinks)
-      .where(eq(taskLinks.parentId, parentId))
-      .where(eq(taskLinks.relation, 'subtask'));
+      .where(
+        and(
+          eq(taskLinks.parentId, parentId),
+          eq(taskLinks.relation, 'subtask')
+        )
+      );
     
     if (!childLinks.length) return [];
     
-    const childIds = childLinks.map(link => link.childId);
+    const childIds = childLinks.map((link: { childId: string }) => link.childId);
     const childTasks = await Promise.all(
       childIds.map(id => db.select().from(tasks).where(eq(tasks.id, id)).get())
     );
@@ -157,8 +173,12 @@ export const taskLinkQueries = {
     const parentLink = await db
       .select({ parentId: taskLinks.parentId })
       .from(taskLinks)
-      .where(eq(taskLinks.childId, childId))
-      .where(eq(taskLinks.relation, 'subtask'))
+      .where(
+        and(
+          eq(taskLinks.childId, childId),
+          eq(taskLinks.relation, 'subtask')
+        )
+      )
       .get();
     
     if (!parentLink) return null;
@@ -179,8 +199,12 @@ export const taskLinkQueries = {
   deleteTaskLink: async (childId: string, relation: string = 'subtask') => {
     await db
       .delete(taskLinks)
-      .where(eq(taskLinks.childId, childId))
-      .where(eq(taskLinks.relation, relation));
+      .where(
+        and(
+          eq(taskLinks.childId, childId),
+          eq(taskLinks.relation, relation)
+        )
+      );
   },
   
   // 親子関係の更新
@@ -188,8 +212,12 @@ export const taskLinkQueries = {
     // 既存の親子関係を削除
     await db
       .delete(taskLinks)
-      .where(eq(taskLinks.childId, childId))
-      .where(eq(taskLinks.relation, 'subtask'));
+      .where(
+        and(
+          eq(taskLinks.childId, childId),
+          eq(taskLinks.relation, 'subtask')
+        )
+      );
     
     // 新しい親が指定されていれば追加
     if (newParentId) {

@@ -3,7 +3,7 @@ import { labels, taskLabels, tasks } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
 // ラベルデータの変換
-const mapDbLabelToGraphQLLabel = (dbLabel: any): Label => {
+const mapDbLabelToGraphQLLabel = (dbLabel: typeof labels.$inferSelect): Label => {
   return {
     ...dbLabel
   }
@@ -11,42 +11,43 @@ const mapDbLabelToGraphQLLabel = (dbLabel: any): Label => {
 
 export const labelResolvers = {
   Query: {
-    labels: async (_: any, args: {}, ctx: GraphQLContext) => {
+    labels: async (_: unknown, args: Record<string, never>, ctx: GraphQLContext) => {
       const allLabels = await ctx.db.select().from(labels)
       return allLabels.map(mapDbLabelToGraphQLLabel)
     },
     
-    label: async (_: any, args: { id: number }, ctx: GraphQLContext) => {
+    label: async (_: unknown, args: { id: number }, ctx: GraphQLContext) => {
       const label = await ctx.db.select().from(labels).where(eq(labels.id, args.id)).get()
       return label ? mapDbLabelToGraphQLLabel(label) : null
     }
   },
   
   Mutation: {
-    createLabel: async (_: any, args: { input: CreateLabelInput }, ctx: GraphQLContext) => {
+    createLabel: async (_: unknown, args: { input: CreateLabelInput }, ctx: GraphQLContext) => {
       const { name, color } = args.input
       
       const newLabel = {
         name,
         color: color || null,
-        createdAt: Date.now()
+        createdAt: new Date()
       }
       
       // ラベルをDBに挿入
       const result = await ctx.db.insert(labels).values(newLabel)
       
       // 生成されたIDを取得してラベルオブジェクトに追加
-      const id = result.lastInsertId
+      // SQLite D1の型が正しく定義されているか確認が必要
+      const id = Number(result.meta?.lastInsertRowid)
       
       return mapDbLabelToGraphQLLabel({ ...newLabel, id })
     },
     
-    updateLabel: async (_: any, args: { id: number, input: UpdateLabelInput }, ctx: GraphQLContext) => {
+    updateLabel: async (_: unknown, args: { id: number, input: UpdateLabelInput }, ctx: GraphQLContext) => {
       const { id } = args
       const { name, color } = args.input
       
       // 更新用データの作成
-      const updates: any = {}
+      const updates: Partial<typeof labels.$inferInsert> = {}
       
       if (name !== undefined) updates.name = name
       if (color !== undefined) updates.color = color
@@ -60,7 +61,7 @@ export const labelResolvers = {
       return updatedLabel ? mapDbLabelToGraphQLLabel(updatedLabel) : null
     },
     
-    deleteLabel: async (_: any, args: { id: number }, ctx: GraphQLContext) => {
+    deleteLabel: async (_: unknown, args: { id: number }, ctx: GraphQLContext) => {
       // ラベルの存在確認
       const labelExists = await ctx.db.select().from(labels).where(eq(labels.id, args.id)).get()
       
@@ -72,7 +73,7 @@ export const labelResolvers = {
       return args.id.toString()
     },
     
-    addTaskLabel: async (_: any, args: { taskId: string, labelId: number }, ctx: GraphQLContext) => {
+    addTaskLabel: async (_: unknown, args: { taskId: string, labelId: number }, ctx: GraphQLContext) => {
       const { taskId, labelId } = args
       
       // タスクとラベルの存在確認
@@ -85,8 +86,10 @@ export const labelResolvers = {
       const existingLink = await ctx.db
         .select()
         .from(taskLabels)
-        .where(eq(taskLabels.taskId, taskId))
-        .where(eq(taskLabels.labelId, labelId))
+        .where(
+          eq(taskLabels.taskId, taskId) && 
+          eq(taskLabels.labelId, labelId)
+        )
         .get()
       
       // 存在しない場合のみ追加
@@ -104,7 +107,7 @@ export const labelResolvers = {
       }
     },
     
-    removeTaskLabel: async (_: any, args: { taskId: string, labelId: number }, ctx: GraphQLContext) => {
+    removeTaskLabel: async (_: unknown, args: { taskId: string, labelId: number }, ctx: GraphQLContext) => {
       const { taskId, labelId } = args
       
       // タスクの存在確認
@@ -115,8 +118,10 @@ export const labelResolvers = {
       // 関連削除
       await ctx.db
         .delete(taskLabels)
-        .where(eq(taskLabels.taskId, taskId))
-        .where(eq(taskLabels.labelId, labelId))
+        .where(
+          eq(taskLabels.taskId, taskId) && 
+          eq(taskLabels.labelId, labelId)
+        )
       
       // 更新後のタスクを返す
       return {
@@ -127,7 +132,7 @@ export const labelResolvers = {
   },
   
   Label: {
-    tasks: async (parent: Label, _: any, ctx: GraphQLContext) => {
+    tasks: async (parent: Label, _: unknown, ctx: GraphQLContext) => {
       // ラベルに関連するタスクを取得
       const taskRelations = await ctx.db
         .select()
@@ -146,7 +151,7 @@ export const labelResolvers = {
       
       // nullを除外して返す
       return tasksData
-        .filter(Boolean)
+        .filter((task): task is NonNullable<typeof task> => task !== null && task !== undefined)
         .map(task => ({
           ...task,
           status: task.state,

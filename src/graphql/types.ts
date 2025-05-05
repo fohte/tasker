@@ -1,12 +1,14 @@
 import { Task as DbTask } from '@/db/schema'
 
 // GraphQLのリゾルバーで使用する型定義
-export interface Task extends Omit<DbTask, 'state' | 'createdAt' | 'updatedAt' | 'dueAt' | 'closedAt'> {
+export interface Task {
+  id: string
+  title: string
   status: string
-  description?: string | null
+  description: string | null
   createdAt: string
   updatedAt: string
-  dueAt?: string | null
+  dueAt: string | null
   parent?: Task | null
   children?: Task[]
   labels?: Label[]
@@ -63,7 +65,9 @@ export interface UpdateCommentInput {
   content: string
 }
 
+import { drizzle } from 'drizzle-orm/d1'
+
 // コンテキスト型
 export interface GraphQLContext {
-  db: any // drizzle-ormのDB型に置き換え
+  db: ReturnType<typeof drizzle>
 }

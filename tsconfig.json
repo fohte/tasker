@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["@cloudflare/workers-types", "node"], // Added Cloudflare types and node types
+    "types": ["@cloudflare/workers-types", "node", "vitest/globals"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -24,5 +24,7 @@
     }
   },
   "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", ".next/types/**/*.ts"],
-  "exclude": ["node_modules"]
+  "exclude": [
+    "node_modules"
+  ]
 }

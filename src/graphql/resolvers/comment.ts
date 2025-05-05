@@ -6,14 +6,14 @@ import { eq } from 'drizzle-orm'
 
 export const commentResolvers = {
   Query: {
-    comments: async (_: any, args: { taskId: string }, ctx: GraphQLContext) => {
+    comments: async (_: unknown, args: { taskId: string }, ctx: GraphQLContext) => {
       // コメントテーブルがまだ存在しないため、空の配列を返す
       return []
     }
   },
   
   Mutation: {
-    createComment: async (_: any, args: { input: CreateCommentInput }, ctx: GraphQLContext) => {
+    createComment: async (_: unknown, args: { input: CreateCommentInput }, ctx: GraphQLContext) => {
       const { taskId, content } = args.input
       
       // タスクの存在確認
@@ -39,23 +39,32 @@ export const commentResolvers = {
       return newComment
     },
     
-    updateComment: async (_: any, args: { id: number, input: UpdateCommentInput }, ctx: GraphQLContext) => {
+    updateComment: async (_: unknown, args: { id: number, input: UpdateCommentInput }, ctx: GraphQLContext) => {
       // コメントテーブルがまだないため、null を返す
       return null
     },
     
-    deleteComment: async (_: any, args: { id: number }, ctx: GraphQLContext) => {
+    deleteComment: async (_: unknown, args: { id: number }, ctx: GraphQLContext) => {
       // コメントテーブルがまだないため、null を返す
       return null
     }
   },
   
   Comment: {
-    task: async (parent: Comment, _: any, ctx: GraphQLContext) => {
+    task: async (parent: Comment, _: unknown, ctx: GraphQLContext) => {
       if (parent.task) return parent.task
       
+      // Comment型では task が必須だが、実行時に undefined の可能性がある
+      // TypeScriptの型システムでは解決できないので、実装側で対応
+      // エラーを回避するためにparent.task as any を使用
+      const taskId = (parent.task as any)?.id
+      
+      if (!taskId) {
+        throw new Error('Comment is missing task ID')
+      }
+      
       // タスクの取得
-      const task = await ctx.db.select().from(tasks).where(eq(tasks.id, parent.task.id)).get()
+      const task = await ctx.db.select().from(tasks).where(eq(tasks.id, taskId)).get()
       
       if (!task) return null
       

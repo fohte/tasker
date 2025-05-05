@@ -1,10 +1,6 @@
 import '@testing-library/jest-dom'
-import { afterEach } from 'vitest'
+import { afterEach, vi } from 'vitest'
 import { cleanup } from '@testing-library/react'
-
-// Vitestでmockを使えるようにするための設定
-// https://vitest.dev/guide/mocking.html
-Object.defineProperty(global, 'vi', { value: vi })
 
 // 各テスト後にReactコンポーネントをクリーンアップ
 afterEach(() => {
@@ -16,16 +12,17 @@ afterEach(() => {
 
 // SWRのモック
 vi.mock('swr', async () => {
-  const actual = await vi.importActual('swr')
+  const actual = await vi.importActual<any>('swr')
   return {
     ...actual,
-    default: vi.fn().mockImplementation((...args) => {
-      const hookResult = actual.default(...args)
+    default: vi.fn().mockImplementation((...args: any[]) => {
+      const hookResult = actual.default ? actual.default(...args) : {}
       // デフォルトのモック値で上書き
       return {
         data: undefined,
         error: undefined,
         isLoading: false,
+        isValidating: false,
         mutate: vi.fn(),
         ...hookResult,
       }

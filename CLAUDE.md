@@ -34,3 +34,8 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Next.js App Router with TypeScript and Tailwind CSS
 - Cloudflare Workers for deployment
 - GraphQL for API (see docs/architecture/graphql.md)
+
+## Implementation Guidelines
+- Follow todo.md: Implement tasks one by one as listed in todo.md
+- Update todo.md after each task completion
+- Commit changes after each task is completed

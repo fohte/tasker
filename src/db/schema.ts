@@ -16,6 +16,7 @@ export const tasks = sqliteTable('tasks', {
   // Use text for UUIDs in SQLite. Generation should be handled by the application.
   id: text('id').primaryKey(),
   title: text('title').notNull(),
+  description: text('description'),
   state: text('state', { enum: ['todo', 'in_progress', 'done', 'cancelled'] }).notNull().default('todo'),
   dueAt: integer('due_at', { mode: 'timestamp' }),
   createdAt: integer('created_at', { mode: 'timestamp' }).notNull().default(sql`(unixepoch())`),

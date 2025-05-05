@@ -1,43 +1,33 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { taskResolvers } from './task'
 import { GraphQLContext, Task } from '../types'
-import { db } from '@/db'
 
-// DB関連のモジュールのモック
+// Vitestのモックシステムを使用するにはvi.mock呼び出しをモジュールのトップレベルに配置する必要があります
 vi.mock('@/db', () => {
-  const mockTaskQueries = {
-    getAllTasks: vi.fn(),
-    getTaskById: vi.fn(),
-    searchTasks: vi.fn(),
-    createTask: vi.fn(),
-    updateTask: vi.fn(),
-    deleteTask: vi.fn(),
-  }
-  
-  const mockTaskLinkQueries = {
-    getParentTask: vi.fn(),
-    getChildTasks: vi.fn(),
-    createTaskLink: vi.fn(),
-    updateParent: vi.fn(),
-    deleteTaskLink: vi.fn(),
-  }
-  
-  const mockLabelQueries = {
-    getLabelsByTaskId: vi.fn(),
-  }
-  
-  const mockDb = {
-    select: vi.fn().mockReturnThis(),
-    from: vi.fn().mockReturnThis(),
-    where: vi.fn().mockReturnThis(),
-    delete: vi.fn().mockReturnThis(),
-  }
-  
   return {
-    taskQueries: mockTaskQueries,
-    taskLinkQueries: mockTaskLinkQueries,
-    labelQueries: mockLabelQueries,
-    db: mockDb,
+    taskQueries: {
+      getAllTasks: vi.fn(),
+      getTaskById: vi.fn(),
+      searchTasks: vi.fn(),
+      createTask: vi.fn(),
+      updateTask: vi.fn(),
+      deleteTask: vi.fn(),
+    },
+    taskLinkQueries: {
+      getParentTask: vi.fn(),
+      getChildTasks: vi.fn(),
+      createTaskLink: vi.fn(),
+      updateParent: vi.fn(),
+      deleteTaskLink: vi.fn(),
+    },
+    labelQueries: {
+      getLabelsByTaskId: vi.fn(),
+    },
+    db: {
+      select: vi.fn().mockReturnThis(),
+      from: vi.fn().mockReturnThis(),
+      where: vi.fn().mockReturnThis(),
+      delete: vi.fn().mockReturnThis(),
+    }
   }
 })
 
@@ -70,6 +60,10 @@ vi.mock('../validators', () => ({
   ValidationError: class ValidationError extends Error {},
 }))
 
+// モジュールのインポートはvi.mockの後に行う必要があります
+import { taskResolvers } from './task'
+import { db, taskQueries, taskLinkQueries, labelQueries } from '@/db'
+
 describe('Task Resolvers', () => {
   const mockContext: GraphQLContext = {
     db,
@@ -87,7 +81,8 @@ describe('Task Resolvers', () => {
           { id: 'task2', title: 'Task 2', state: 'done', createdAt: Date.now(), updatedAt: Date.now() },
         ]
         
-        vi.mocked(require('@/db').taskQueries.getAllTasks).mockResolvedValueOnce(mockTasks)
+        // 直接mockTaskQueriesを使用
+        taskQueries.getAllTasks.mockResolvedValueOnce(mockTasks)
         
         const result = await taskResolvers.Query.tasks({}, {}, mockContext)
         
@@ -103,11 +98,11 @@ describe('Task Resolvers', () => {
           { id: 'task1', title: 'Sample Task', state: 'todo', createdAt: Date.now(), updatedAt: Date.now() },
         ]
         
-        vi.mocked(require('@/db').taskQueries.searchTasks).mockResolvedValueOnce(mockTasks)
+        taskQueries.searchTasks.mockResolvedValueOnce(mockTasks)
         
         const result = await taskResolvers.Query.tasks({}, { search: 'Sample' }, mockContext)
         
-        expect(require('@/db').taskQueries.searchTasks).toHaveBeenCalledWith('Sample')
+        expect(taskQueries.searchTasks).toHaveBeenCalledWith('Sample')
         expect(result).toHaveLength(1)
         expect(result[0].id).toBe('task1')
       })
@@ -117,24 +112,24 @@ describe('Task Resolvers', () => {
           { id: 'child1', title: 'Child Task 1', state: 'todo', createdAt: Date.now(), updatedAt: Date.now() },
         ]
         
-        vi.mocked(require('@/db').taskLinkQueries.getChildTasks).mockResolvedValueOnce(mockTasks)
+        taskLinkQueries.getChildTasks.mockResolvedValueOnce(mockTasks)
         
         const result = await taskResolvers.Query.tasks({}, { parentId: 'parent1' }, mockContext)
         
-        expect(require('@/db').taskLinkQueries.getChildTasks).toHaveBeenCalledWith('parent1')
+        expect(taskLinkQueries.getChildTasks).toHaveBeenCalledWith('parent1')
         expect(result).toHaveLength(1)
         expect(result[0].id).toBe('child1')
       })
       
       it('returns tasks with specific label when labelId arg is provided', async () => {
         // labelIdによる検索のテスト
-        vi.mocked(db.select).mockReturnValueOnce({
+        db.select.mockReturnValueOnce({
           from: vi.fn().mockReturnThis(),
           where: vi.fn().mockResolvedValueOnce([{ taskId: 'task1' }]),
         } as any)
         
         const mockTask = { id: 'task1', title: 'Task with Label', state: 'todo', createdAt: Date.now(), updatedAt: Date.now() }
-        vi.mocked(require('@/db').taskQueries.getTaskById).mockResolvedValueOnce(mockTask)
+        taskQueries.getTaskById.mockResolvedValueOnce(mockTask)
         
         const result = await taskResolvers.Query.tasks({}, { labelId: 1 }, mockContext)
         
@@ -147,17 +142,17 @@ describe('Task Resolvers', () => {
       it('returns a single task by id', async () => {
         const mockTask = { id: 'task1', title: 'Task 1', state: 'todo', createdAt: Date.now(), updatedAt: Date.now() }
         
-        vi.mocked(require('@/db').taskQueries.getTaskById).mockResolvedValueOnce(mockTask)
+        taskQueries.getTaskById.mockResolvedValueOnce(mockTask)
         
         const result = await taskResolvers.Query.task({}, { id: 'task1' }, mockContext)
         
-        expect(require('@/db').taskQueries.getTaskById).toHaveBeenCalledWith('task1')
+        expect(taskQueries.getTaskById).toHaveBeenCalledWith('task1')
         expect(result?.id).toBe('task1')
         expect(result?.status).toBe('todo')
       })
       
       it('returns null when task is not found', async () => {
-        vi.mocked(require('@/db').taskQueries.getTaskById).mockResolvedValueOnce(null)
+        taskQueries.getTaskById.mockResolvedValueOnce(null)
         
         const result = await taskResolvers.Query.task({}, { id: 'nonexistent' }, mockContext)
         
@@ -176,11 +171,11 @@ describe('Task Resolvers', () => {
           dueAt: '2025-12-31T00:00:00.000Z',
         }
         
-        vi.mocked(require('@/db').taskQueries.createTask).mockResolvedValueOnce(true)
+        taskQueries.createTask.mockResolvedValueOnce(true)
         
         const result = await taskResolvers.Mutation.createTask({}, { input }, mockContext)
         
-        expect(require('@/db').taskQueries.createTask).toHaveBeenCalledWith(expect.objectContaining({
+        expect(taskQueries.createTask).toHaveBeenCalledWith(expect.objectContaining({
           id: 'test-uuid',
           title: 'New Task',
           description: 'Task description',
@@ -200,12 +195,12 @@ describe('Task Resolvers', () => {
           parentId: 'parent1',
         }
         
-        vi.mocked(require('@/db').taskQueries.createTask).mockResolvedValueOnce(true)
-        vi.mocked(require('@/db').taskLinkQueries.createTaskLink).mockResolvedValueOnce(true)
+        taskQueries.createTask.mockResolvedValueOnce(true)
+        taskLinkQueries.createTaskLink.mockResolvedValueOnce(true)
         
         await taskResolvers.Mutation.createTask({}, { input }, mockContext)
         
-        expect(require('@/db').taskLinkQueries.createTaskLink).toHaveBeenCalledWith('parent1', 'test-uuid')
+        expect(taskLinkQueries.createTaskLink).toHaveBeenCalledWith('parent1', 'test-uuid')
       })
     })
     
@@ -224,11 +219,11 @@ describe('Task Resolvers', () => {
           updatedAt: Date.now(),
         }
         
-        vi.mocked(require('@/db').taskQueries.updateTask).mockResolvedValueOnce(updatedTask)
+        taskQueries.updateTask.mockResolvedValueOnce(updatedTask)
         
         const result = await taskResolvers.Mutation.updateTask({}, { id, input }, mockContext)
         
-        expect(require('@/db').taskQueries.updateTask).toHaveBeenCalledWith('task1', expect.objectContaining({
+        expect(taskQueries.updateTask).toHaveBeenCalledWith('task1', expect.objectContaining({
           title: 'Updated Task',
           state: 'in_progress',
         }))
@@ -251,16 +246,16 @@ describe('Task Resolvers', () => {
           updatedAt: Date.now(),
         }
         
-        vi.mocked(require('@/db').taskQueries.updateTask).mockResolvedValueOnce(updatedTask)
-        vi.mocked(require('@/db').taskLinkQueries.updateParent).mockResolvedValueOnce(true)
+        taskQueries.updateTask.mockResolvedValueOnce(updatedTask)
+        taskLinkQueries.updateParent.mockResolvedValueOnce(true)
         
         await taskResolvers.Mutation.updateTask({}, { id, input }, mockContext)
         
-        expect(require('@/db').taskLinkQueries.updateParent).toHaveBeenCalledWith('task1', 'newParent')
+        expect(taskLinkQueries.updateParent).toHaveBeenCalledWith('task1', 'newParent')
       })
       
       it('returns null when task is not found', async () => {
-        vi.mocked(require('@/db').taskQueries.updateTask).mockResolvedValueOnce(null)
+        taskQueries.updateTask.mockResolvedValueOnce(null)
         
         const result = await taskResolvers.Mutation.updateTask({}, { id: 'nonexistent', input: {} }, mockContext)
         
@@ -270,21 +265,21 @@ describe('Task Resolvers', () => {
     
     describe('deleteTask', () => {
       it('deletes a task and its relationships', async () => {
-        vi.mocked(require('@/db').taskQueries.deleteTask).mockResolvedValueOnce('task1')
-        vi.mocked(require('@/db').taskLinkQueries.deleteTaskLink).mockResolvedValueOnce(true)
-        vi.mocked(db.delete).mockReturnValueOnce({
+        taskQueries.deleteTask.mockResolvedValueOnce('task1')
+        taskLinkQueries.deleteTaskLink.mockResolvedValueOnce(true)
+        db.delete.mockReturnValueOnce({
           where: vi.fn().mockResolvedValueOnce(true),
         } as any)
         
         const result = await taskResolvers.Mutation.deleteTask({}, { id: 'task1' }, mockContext)
         
-        expect(require('@/db').taskQueries.deleteTask).toHaveBeenCalledWith('task1')
-        expect(require('@/db').taskLinkQueries.deleteTaskLink).toHaveBeenCalledWith('task1')
+        expect(taskQueries.deleteTask).toHaveBeenCalledWith('task1')
+        expect(taskLinkQueries.deleteTaskLink).toHaveBeenCalledWith('task1')
         expect(result).toBe('task1')
       })
       
       it('returns null when task is not found', async () => {
-        vi.mocked(require('@/db').taskQueries.deleteTask).mockResolvedValueOnce(null)
+        taskQueries.deleteTask.mockResolvedValueOnce(null)
         
         const result = await taskResolvers.Mutation.deleteTask({}, { id: 'nonexistent' }, mockContext)
         
@@ -308,17 +303,17 @@ describe('Task Resolvers', () => {
       it('returns parent task when available', async () => {
         const mockParent = { id: 'parent1', title: 'Parent Task', state: 'todo', createdAt: Date.now(), updatedAt: Date.now() }
         
-        vi.mocked(require('@/db').taskLinkQueries.getParentTask).mockResolvedValueOnce(mockParent)
+        taskLinkQueries.getParentTask.mockResolvedValueOnce(mockParent)
         
         const result = await taskResolvers.Task.parent(mockTask, {}, mockContext)
         
-        expect(require('@/db').taskLinkQueries.getParentTask).toHaveBeenCalledWith('task1')
+        expect(taskLinkQueries.getParentTask).toHaveBeenCalledWith('task1')
         expect(result?.id).toBe('parent1')
         expect(result?.status).toBe('todo')
       })
       
       it('returns null when parent task is not found', async () => {
-        vi.mocked(require('@/db').taskLinkQueries.getParentTask).mockResolvedValueOnce(null)
+        taskLinkQueries.getParentTask.mockResolvedValueOnce(null)
         
         const result = await taskResolvers.Task.parent(mockTask, {}, mockContext)
         
@@ -333,11 +328,11 @@ describe('Task Resolvers', () => {
           { id: 'child2', title: 'Child Task 2', state: 'in_progress', createdAt: Date.now(), updatedAt: Date.now() },
         ]
         
-        vi.mocked(require('@/db').taskLinkQueries.getChildTasks).mockResolvedValueOnce(mockChildren)
+        taskLinkQueries.getChildTasks.mockResolvedValueOnce(mockChildren)
         
         const result = await taskResolvers.Task.children(mockTask, {}, mockContext)
         
-        expect(require('@/db').taskLinkQueries.getChildTasks).toHaveBeenCalledWith('task1')
+        expect(taskLinkQueries.getChildTasks).toHaveBeenCalledWith('task1')
         expect(result).toHaveLength(2)
         expect(result[0].id).toBe('child1')
         expect(result[1].id).toBe('child2')
@@ -351,11 +346,11 @@ describe('Task Resolvers', () => {
           { id: 'label2', name: 'Work', color: 'blue' },
         ]
         
-        vi.mocked(require('@/db').labelQueries.getLabelsByTaskId).mockResolvedValueOnce(mockLabels)
+        labelQueries.getLabelsByTaskId.mockResolvedValueOnce(mockLabels)
         
         const result = await taskResolvers.Task.labels(mockTask, {}, mockContext)
         
-        expect(require('@/db').labelQueries.getLabelsByTaskId).toHaveBeenCalledWith('task1')
+        expect(labelQueries.getLabelsByTaskId).toHaveBeenCalledWith('task1')
         expect(result).toHaveLength(2)
         expect(result[0].id).toBe('label1')
         expect(result[1].id).toBe('label2')

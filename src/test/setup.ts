@@ -2,9 +2,14 @@ import '@testing-library/jest-dom'
 import { afterEach } from 'vitest'
 import { cleanup } from '@testing-library/react'
 
+// Vitestでmockを使えるようにするための設定
+// https://vitest.dev/guide/mocking.html
+Object.defineProperty(global, 'vi', { value: vi })
+
 // 各テスト後にReactコンポーネントをクリーンアップ
 afterEach(() => {
   cleanup()
+  vi.clearAllMocks()
 })
 
 // グローバルモックの設定

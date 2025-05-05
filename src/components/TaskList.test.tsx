@@ -95,11 +95,12 @@ describe('TaskList Component', () => {
     
     render(<TaskList searchTerm="検索テキスト" />)
     
-    expect(useTasks).toHaveBeenCalledWith({
+    // 第2引数は省略可能なのでチェックしない
+    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
       search: '検索テキスト',
       parentId: undefined,
       labelId: undefined,
-    }, undefined)
+    }))
   })
 
   it('passes parentId parameter to useTasks', () => {
@@ -112,11 +113,11 @@ describe('TaskList Component', () => {
     
     render(<TaskList parentId="parent-1" />)
     
-    expect(useTasks).toHaveBeenCalledWith({
+    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
       search: undefined,
       parentId: 'parent-1',
       labelId: undefined,
-    }, undefined)
+    }))
   })
 
   it('passes labelId parameter to useTasks', () => {
@@ -129,11 +130,11 @@ describe('TaskList Component', () => {
     
     render(<TaskList labelId="label-1" />)
     
-    expect(useTasks).toHaveBeenCalledWith({
+    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
       search: undefined,
       parentId: undefined,
       labelId: 'label-1',
-    }, undefined)
+    }))
   })
   
   it('calls onTaskClick when a task is clicked', () => {

@@ -33,7 +33,9 @@ describe('TaskItem Component', () => {
     
     expect(screen.getByText('テストタスク')).toBeInTheDocument()
     expect(screen.getByText('これはテスト用のタスクです')).toBeInTheDocument()
-    expect(screen.getByText('未着手')).toBeInTheDocument()
+    // "未着手" テキストは複数箇所に存在するため、特定の要素で検索
+    expect(screen.getByRole('heading', { level: 3, name: 'テストタスク' })).toBeInTheDocument()
+    expect(screen.getAllByText('未着手').length).toBeGreaterThan(0)
     expect(screen.getByText('期限: 2025年12月31日')).toBeInTheDocument()
   })
 
@@ -60,19 +62,33 @@ describe('TaskItem Component', () => {
     const inProgressButton = screen.getByText('進行中')
     fireEvent.click(inProgressButton)
     
-    expect(taskMutations.updateTask).toHaveBeenCalledWith('task-1', { status: 'in_progress' })
-    expect(mockProps.onStatusChange).toHaveBeenCalledWith('task-1', 'in_progress')
+    // waitFor を使用して非同期更新を待つ
+    await vi.waitFor(() => {
+      expect(taskMutations.updateTask).toHaveBeenCalledWith('task-1', { status: 'in_progress' })
+    })
+    
+    // 非同期処理が完了するまで待機
+    await vi.waitFor(() => {
+      expect(mockProps.onStatusChange).toHaveBeenCalledWith('task-1', 'in_progress')
+    })
   })
 
-  it('deletes task when delete button is clicked and confirmed', () => {
+  it('deletes task when delete button is clicked and confirmed', async () => {
     render(<TaskItem {...mockProps} />)
     
     const deleteButton = screen.getByText('削除')
     fireEvent.click(deleteButton)
     
     expect(window.confirm).toHaveBeenCalled()
-    expect(taskMutations.deleteTask).toHaveBeenCalledWith('task-1')
-    expect(mockProps.onDelete).toHaveBeenCalledWith('task-1')
+    
+    // 非同期処理が完了するまで待機
+    await vi.waitFor(() => {
+      expect(taskMutations.deleteTask).toHaveBeenCalledWith('task-1')
+    })
+    
+    await vi.waitFor(() => {
+      expect(mockProps.onDelete).toHaveBeenCalledWith('task-1')
+    })
   })
 
   it('does not delete task when delete is not confirmed', () => {

@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES2017",
     "lib": ["dom", "dom.iterable", "esnext"],
-    "types": ["@cloudflare/workers-types", "node", "vitest/globals"],
+    "types": ["@cloudflare/workers-types", "node", "vitest/globals", "react/jsx-runtime"],
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,

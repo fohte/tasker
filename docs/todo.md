@@ -170,6 +170,7 @@
 - [x] 5.1.5. CI/CDでのテスト実行の自動化
 - [ ] 5.1.6. E2Eテストの追加（Playwright）
 - [x] 5.1.7. Storybookの追加とコンポーネントのStory実装
+- [x] 5.1.8. Storybookのテスト実行設定（test-storybook）
 
 ## 6. デプロイメントとメンテナンス
 

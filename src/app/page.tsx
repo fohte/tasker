@@ -103,8 +103,8 @@ export default function Home() {
       </div>
       
       {/* タスクリスト */}
-      <div className="bg-white rounded-lg shadow p-4">
-        <h2 className="text-xl font-semibold mb-4">タスク一覧</h2>
+      <div className="bg-white rounded-lg shadow p-6">
+        <h2 className="text-xl font-semibold mb-6">タスク一覧</h2>
         <TaskList 
           searchTerm={searchTerm || undefined}
           onTaskClick={handleTaskClick}

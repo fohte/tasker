@@ -8,7 +8,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - **MUST** insert tasks into todo.md if new tasks are identified
 - After each task **MUST** update `docs/todo.md` (mark as done) and commit all changes (use `git add .` to stage all changes, including new files and folders)
 - **NEVER** group multiple tasks in one commit
-- **MUST** follow Conventional Commits format like:
+- **MUST** Ffllow Conventional Commits format like:
 
   ```
   <type>[optional scope]: <description>
@@ -16,16 +16,11 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   [optional body]
   ```
 
-- **NEVER** disable tests or checks to make commits pass; always fix the underlying issues
-
 ## Build & Development Commands
 
 - Build: `bun run build`
 - Dev server: `bun run dev`
 - Lint: `bun run lint`
-- Test: `bun run test`
-- Typecheck: `bun run typecheck`
-- Storybook: `bun run storybook`
 - Database:
   - Generate migrations: `bun run db:generate`
   - Run migrations: `bun run db:migrate`

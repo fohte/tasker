@@ -38,4 +38,4 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ## Implementation Guidelines
 - Follow todo.md: Implement tasks one by one as listed in todo.md
 - Update todo.md after each task completion
-- Commit changes after each task is completed
+- Commit changes for each task and todo.md after each task is completed

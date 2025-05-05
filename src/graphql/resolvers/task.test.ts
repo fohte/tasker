@@ -2,25 +2,26 @@
 import { describe, expect, it, vi, beforeEach, test, assert } from 'vitest'
 import { GraphQLContext, Task } from '../types'
 
-// エラー回避のためにテスト用モック変数を用意
-const mockGetAllTasks = vi.fn().mockImplementation(() => Promise.resolve([]));
-const mockGetTaskById = vi.fn().mockImplementation(() => Promise.resolve(null));
-const mockSearchTasks = vi.fn().mockImplementation(() => Promise.resolve([]));
-const mockCreateTask = vi.fn().mockImplementation(() => Promise.resolve(true));
-const mockUpdateTask = vi.fn().mockImplementation(() => Promise.resolve(null));
-const mockDeleteTask = vi.fn().mockImplementation(() => Promise.resolve(null));
-const mockGetParentTask = vi.fn().mockImplementation(() => Promise.resolve(null));
-const mockGetChildTasks = vi.fn().mockImplementation(() => Promise.resolve([]));
-const mockCreateTaskLink = vi.fn().mockImplementation(() => Promise.resolve(true));
-const mockUpdateParent = vi.fn().mockImplementation(() => Promise.resolve(true));
-const mockDeleteTaskLink = vi.fn().mockImplementation(() => Promise.resolve(true));
-const mockGetLabelsByTaskId = vi.fn().mockImplementation(() => Promise.resolve([]));
-const mockSelect = vi.fn().mockReturnThis();
-const mockFrom = vi.fn().mockReturnThis();
-const mockWhere = vi.fn().mockReturnThis();
-const mockDelete = vi.fn().mockReturnThis();
+// vi.hoisted() を使用してモック変数をトップレベルで宣言
+// これにより、モックのホイスティングの問題を解決
+const mockGetAllTasks = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve([])));
+const mockGetTaskById = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(null)));
+const mockSearchTasks = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve([])));
+const mockCreateTask = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(true)));
+const mockUpdateTask = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(null)));
+const mockDeleteTask = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(null)));
+const mockGetParentTask = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(null)));
+const mockGetChildTasks = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve([])));
+const mockCreateTaskLink = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(true)));
+const mockUpdateParent = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(true)));
+const mockDeleteTaskLink = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve(true)));
+const mockGetLabelsByTaskId = vi.hoisted(() => vi.fn().mockImplementation(() => Promise.resolve([])));
+const mockSelect = vi.hoisted(() => vi.fn().mockReturnThis());
+const mockFrom = vi.hoisted(() => vi.fn().mockReturnThis());
+const mockWhere = vi.hoisted(() => vi.fn().mockReturnThis());
+const mockDelete = vi.hoisted(() => vi.fn().mockReturnThis());
 
-// Vitestのモックシステムを使用するにはvi.mock呼び出しをモジュールのトップレベルに配置する必要があります
+// vi.mockを使用してDBモジュールをモック
 vi.mock('@/db', () => {
   return {
     taskQueries: {
@@ -51,33 +52,41 @@ vi.mock('@/db', () => {
 })
 
 // DBスキーマのモック
-vi.mock('@/db/schema', () => ({
-  tasks: {},
-  taskLabels: { taskId: 'taskId', labelId: 'labelId' },
-  taskLinks: { parentId: 'parentId', childId: 'childId' },
-  labels: {},
-}))
+vi.mock('@/db/schema', () => {
+  return {
+    tasks: {},
+    taskLabels: { taskId: 'taskId', labelId: 'labelId' },
+    taskLinks: { parentId: 'parentId', childId: 'childId' },
+    labels: {},
+  }
+})
 
 // drizzle-ormのモック
-vi.mock('drizzle-orm', () => ({
-  and: vi.fn().mockImplementation((a, b) => ({ and: [a, b] })),
-  eq: vi.fn().mockImplementation((col, val) => ({ eq: [col, val] })),
-  like: vi.fn().mockImplementation((col, pattern) => ({ like: [col, pattern] })),
-  or: vi.fn().mockImplementation((a, b) => ({ or: [a, b] })),
-  asc: vi.fn().mockImplementation((col) => ({ asc: col })),
-}))
+vi.mock('drizzle-orm', () => {
+  return {
+    and: vi.fn().mockImplementation((a, b) => ({ and: [a, b] })),
+    eq: vi.fn().mockImplementation((col, val) => ({ eq: [col, val] })),
+    like: vi.fn().mockImplementation((col, pattern) => ({ like: [col, pattern] })),
+    or: vi.fn().mockImplementation((a, b) => ({ or: [a, b] })),
+    asc: vi.fn().mockImplementation((col) => ({ asc: col })),
+  }
+})
 
 // UUIDモック
-vi.mock('uuid', () => ({
-  v4: vi.fn().mockReturnValue('test-uuid'),
-}))
+vi.mock('uuid', () => {
+  return {
+    v4: vi.fn().mockReturnValue('test-uuid'),
+  }
+})
 
 // バリデーターのモック
-vi.mock('../validators', () => ({
-  validateCreateTaskInput: vi.fn().mockImplementation((input) => input),
-  validateUpdateTaskInput: vi.fn().mockImplementation((input) => input),
-  ValidationError: class ValidationError extends Error {},
-}))
+vi.mock('../validators', () => {
+  return {
+    validateCreateTaskInput: vi.fn().mockImplementation((input) => input),
+    validateUpdateTaskInput: vi.fn().mockImplementation((input) => input),
+    ValidationError: class ValidationError extends Error {},
+  }
+})
 
 // モジュールのインポートはvi.mockの後に行う必要があります
 import { taskResolvers } from './task'

@@ -15,8 +15,8 @@
   - [x] 1.2.1.1. GraphQLクエリリゾルバ (`Query.tasks`) の実装
   - [x] 1.2.1.2. Drizzleを使ったタスク取得クエリの実装
 - **1.2.2. フロントエンド:**
-  - [ ] 1.2.2.1. タスク一覧表示用Next.jsページコンポーネント (`app/page.tsx` または `app/tasks/page.tsx`) の作成
-  - [ ] 1.2.2.2. GraphQLクライアントを使ったデータ取得ロジックの実装
+  - [x] 1.2.2.1. タスク一覧表示用Next.jsページコンポーネント (`app/page.tsx` または `app/tasks/page.tsx`) の作成
+  - [x] 1.2.2.2. GraphQLクライアントを使ったデータ取得ロジックの実装
   - [ ] 1.2.2.3. タスク項目コンポーネント (`src/components/TaskItem.tsx`) の作成
   - [ ] 1.2.2.4. タスク一覧のレンダリング実装
   - [ ] 1.2.2.5. Tailwind CSSとshadcn/uiを使ったスタイリング

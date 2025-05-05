@@ -1,26 +1,46 @@
 'use client'
 
 import { useState } from 'react'
+import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
-
-interface Task {
-  id: number
-  text: string
-}
+import { TaskList } from '@/components/TaskList'
+import { useTasks } from '@/lib/hooks'
+import { taskMutations } from '@/lib/hooks'
 
 export default function Home() {
-  const [tasks, setTasks] = useState<Task[]>([])
+  const router = useRouter()
   const [newTaskText, setNewTaskText] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [isCreatingTask, setIsCreatingTask] = useState(false)
+  const [error, setError] = useState<string | null>(null)
+  
+  // SWRでタスクデータを取得
+  const { mutate: refreshTasks } = useTasks({
+    search: searchTerm || undefined
+  });
 
-  const handleAddTask = () => {
+  // タスク作成を処理する関数
+  const handleAddTask = async () => {
     if (newTaskText.trim() === '') return
-    const newTask: Task = {
-      id: Date.now(), // Use timestamp as a simple unique ID for now
-      text: newTaskText.trim(),
+    
+    setIsCreatingTask(true)
+    setError(null)
+    
+    try {
+      await taskMutations.createTask({
+        title: newTaskText.trim(),
+      })
+      
+      setNewTaskText('') // 入力をクリア
+      // タスク一覧を更新
+      refreshTasks()
+    } catch (err) {
+      console.error('Error creating task:', err)
+      setError('タスクの作成中にエラーが発生しました。')
+    } finally {
+      setIsCreatingTask(false)
     }
-    setTasks([...tasks, newTask])
-    setNewTaskText('') // Clear input after adding
   }
 
   const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -33,27 +53,63 @@ export default function Home() {
     }
   }
 
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value)
+  }
+
+  const handleTaskClick = (taskId: string) => {
+    // 詳細ページに遷移（実装予定）
+    console.log('Task clicked:', taskId)
+  }
+
   return (
     <main className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Tasker</h1>
-      <div className="flex gap-2 mb-4">
+      <h1 className="text-2xl font-bold mb-6">Tasker</h1>
+      
+      {/* タスク作成フォーム */}
+      <div className="flex gap-2 mb-6">
         <Input
           type="text"
-          placeholder="Add a new task"
+          placeholder="新しいタスクを追加"
           value={newTaskText}
           onChange={handleInputChange}
           onKeyDown={handleKeyDown}
           className="flex-grow"
+          disabled={isCreatingTask}
         />
-        <Button onClick={handleAddTask}>Add Task</Button>
+        <Button 
+          onClick={handleAddTask}
+          disabled={isCreatingTask || newTaskText.trim() === ''}
+        >
+          {isCreatingTask ? '追加中...' : 'タスク追加'}
+        </Button>
       </div>
-      <ul>
-        {tasks.map((task) => (
-          <li key={task.id} className="border-b p-2">
-            {task.text}
-          </li>
-        ))}
-      </ul>
+      
+      {error && (
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
+          {error}
+        </div>
+      )}
+      
+      {/* 検索フォーム */}
+      <div className="mb-6">
+        <Input
+          type="text"
+          placeholder="タスクを検索..."
+          value={searchTerm}
+          onChange={handleSearchChange}
+          className="w-full"
+        />
+      </div>
+      
+      {/* タスクリスト */}
+      <div className="bg-white rounded-lg shadow p-4">
+        <h2 className="text-xl font-semibold mb-4">タスク一覧</h2>
+        <TaskList 
+          searchTerm={searchTerm || undefined}
+          onTaskClick={handleTaskClick}
+        />
+      </div>
     </main>
   )
 }

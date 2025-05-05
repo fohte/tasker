@@ -3,18 +3,21 @@
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
 ## Implementation Guidelines
+
 - **MUST** read `docs/todo.md` and implement the **first unchecked task only**
 - **MUST** insert tasks into todo.md if new tasks are identified
-- After each task **MUST** update `docs/todo.md` (mark as done) and commit changes including `docs/todo.md`
+- After each task **MUST** update `docs/todo.md` (mark as done) and commit all changes (use `git add .` to stage all changes, including new files and folders)
 - **NEVER** group multiple tasks in one commit
 - **MUST** Ffllow Conventional Commits format like:
+
   ```
   <type>[optional scope]: <description>
-  
+
   [optional body]
   ```
 
 ## Build & Development Commands
+
 - Build: `bun run build`
 - Dev server: `bun run dev`
 - Lint: `bun run lint`
@@ -24,8 +27,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
   - Database UI: `bun run db:studio`
 
 ## Code Style Guidelines
+
 - TypeScript: Use strict typing with interfaces/types for all data structures
-- Formatting: 
+- Formatting:
   - No semicolons
   - Single quotes
   - 2-space indentation
@@ -37,6 +41,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 - Error handling: Prefer explicit error types and graceful handling
 
 ## Architecture
+
 - Next.js App Router with TypeScript and Tailwind CSS
 - Cloudflare Workers for deployment
 - GraphQL for API (see docs/architecture/graphql.md)

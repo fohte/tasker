@@ -1,79 +1,61 @@
-## 機能
+## 機能要件
 
-- タスク一覧
-  - [ ] 一覧
-  - [ ] タスク検索
-- [ ] タスク詳細
-  - [ ] ラベル
-  - [ ] 親子関係
-  - [ ] 時系列でコメント (メモ)
-- [ ] (optional) スケジュール管理
-    - Todoist などと連携すれば良いので単体では must ではない
+- 個人専用catuself-hosted 前提
+- モバイルフレンドリー
+- ネイティブアプリのようなUX
+  - スワイプ
+  - View Transitions API
 
-### 特徴
-
-- 個人専用
-- モバイルでも入力しやすい
-- UX がネイティブアプリっぽい
-
-## サイトマップ
+### サイトマップ
 
 ```
-/                          # inbox
+/                          # ダッシュボード/inbox
 ├── tasks/                 # タスク一覧
 │   └── [taskId]           # タスク詳細 (モーダル)
 ├── issues/                # issue 一覧
 │   └── [issueId]          # issue 詳細
 ├── labels/                # グローバルなラベル一覧・管理
 │   └── [labelId]          # 特定ラベルが付いたタスク一覧 (グローバル)
-└── settings/              # 設定ページ
+└── calendar/              # (optional) カレンダービュー
 ```
 
-## テーブル
+- タスク = 小さいタスク (Todoist でのタスク的なもの)
+- issue = 大きいタスク (GitHub issue 的なもの)
 
-```mermaid
-erDiagram
-    tasks {
-        text id PK
-        text title
-        text state
-        timestamp dueAt
-        timestamp createdAt
-        timestamp updatedAt
-        timestamp closedAt
-    }
-    labels {
-        integer id PK
-        text name
-        text color
-        timestamp createdAt
-    }
-    taskLabels {
-        integer id PK
-        text taskId FK
-        integer labelId FK
-    }
-    issues {
-        integer id PK
-        text taskId FK
-        text body
-    }
-    taskLinks {
-        integer id PK
-        text parentId FK
-        text childId FK
-        text relation
-    }
+### CRUD
 
-    tasks ||--o{ taskLabels : "has"
-    labels ||--o{ taskLabels : "has"
-    tasks ||--o| issues : "extends"
-    tasks ||--o{ taskLinks : "parent"
-    tasks ||--o{ taskLinks : "child"
-```
+- [ ] タスク/issue 管理 
+  - [ ] タスク一覧
+    - [ ] リスト表示
+    - [ ] テーブル表示
+    - [ ] カレンダービュー
+    - [ ] フィルタリング
+      - [ ] by status
+      - [ ] by label
+      - [ ] by タイトル、内容 (= 検索)
+      - [ ] by 締切日
+    - [ ] ソート
+  - [ ] タスク詳細
+    - [ ] タスクのタイトル・説明
+    - [ ] ステータス管理（未着手、進行中、完了）
+    - [ ] 締め切り日時の設定
+    - [ ] ラベル管理（追加・削除）
+    - [ ] 親子関係の設定
+    - [ ] 時系列でのコメント・メモ追加
+  - [ ] タスク作成・編集
+    - [ ] クイック作成
+    - [ ] issue 作成
+- [ ] ラベル管理
+  - [ ] ラベルの作成・編集・削除
+  - [ ] ラベルごとのタスク一覧
+- [ ] スケジュール管理
+  - [ ] Todoist などとの連携
 
-- `tasks`: タスク
-- `issues`: issue (GitHub issue 的にチケット化したタスク)
-- `labels`: issue に紐付けるラベル
-- `taskLabels`: タスクとラベルの中間テーブル
-- `taskLinks`: タスクの親子関係を表すテーブル
+### つけない機能
+
+- [ ] タスクの優先度設定（高、中、低）
+
+## 非機能要件
+
+- [ ] オフライン操作のサポート
+- [ ] Cloudflare Access による認証・認可

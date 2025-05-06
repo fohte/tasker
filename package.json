@@ -78,7 +78,6 @@
     ]
   },
   "lint-staged": {
-    "**/*": "prettier --write --ignore-unknown",
-    "**/*.{js,jsx,ts,tsx}": "bun run test"
+    "**/*": "prettier --write --ignore-unknown"
   }
 }

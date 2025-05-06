@@ -1,1 +1,6 @@
-npx lint-staged
+#!/usr/bin/env bash
+
+set -euxo pipefail
+
+bunx lint-staged
+bun run test

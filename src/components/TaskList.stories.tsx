@@ -1,22 +1,18 @@
-import type { Meta, StoryObj } from '@storybook/react'
+import type { Meta, StoryObj, StoryFn, StoryContext } from '@storybook/react'
 import { fn } from '@storybook/test'
 import React from 'react'
+import type { SWRResponse } from 'swr' // Import SWRResponse
 import { TaskList } from './TaskList'
 import * as hooks from '@/lib/hooks'
+import type { TasksQueryResult } from '@/lib/client' // Import TasksQueryResult
 
 // Create a wrapper to mock the useTasks hook
-const MockedTasksProvider = ({
-  children,
-  mockState,
-}: {
-  children: React.ReactNode
+// Define the mock function factory outside the component
+const createMockUseTasks = (
   mockState: 'loading' | 'error' | 'empty' | 'withTasks'
-}) => {
-  // Override the useTasks implementation for Storybook
-  const originalUseTasks = hooks.useTasks
-
-  // @ts-ignore - for Storybook mock purposes
-  hooks.useTasks = () => {
+) => {
+  // Use the explicit return type from the original hook
+  return (): SWRResponse<TasksQueryResult> => {
     switch (mockState) {
       case 'loading':
         return {
@@ -24,15 +20,19 @@ const MockedTasksProvider = ({
           error: undefined,
           isLoading: true,
           isValidating: false,
-          mutate: fn(),
+          mutate: fn() as any, // Use 'as any' for mutate mock if needed
         }
       case 'error':
+        // NOTE: Still using 'as any' for the error object temporarily
+        // If this still fails, the issue might be deeper in type compatibility
+        // Workaround for persistent TS error: Use a plain object instead of Error instance
+        const errorObj = { message: 'Failed to fetch tasks' }
         return {
           data: undefined,
-          error: new Error('Failed to fetch tasks'),
+          error: errorObj,
           isLoading: false,
           isValidating: false,
-          mutate: fn(),
+          mutate: fn() as any,
         }
       case 'empty':
         return {
@@ -40,7 +40,7 @@ const MockedTasksProvider = ({
           error: undefined,
           isLoading: false,
           isValidating: false,
-          mutate: fn(),
+          mutate: fn() as any,
         }
       case 'withTasks':
       default:
@@ -88,20 +88,10 @@ const MockedTasksProvider = ({
           error: undefined,
           isLoading: false,
           isValidating: false,
-          mutate: fn(),
+          mutate: fn() as any,
         }
     }
   }
-
-  // Restore the original implementation when the component unmounts
-  React.useEffect(() => {
-    return () => {
-      // @ts-ignore - for Storybook mock purposes
-      hooks.useTasks = originalUseTasks
-    }
-  }, [originalUseTasks])
-
-  return <>{children}</>
 }
 
 const meta = {
@@ -115,12 +105,6 @@ const meta = {
     searchTerm: { control: 'text' },
     parentId: { control: 'text' },
     labelId: { control: 'text' },
-    mockState: {
-      control: 'select',
-      options: ['loading', 'error', 'empty', 'withTasks'],
-      description: 'The mock state to display',
-      defaultValue: 'withTasks',
-    },
   },
   args: {
     onTaskClick: fn(),
@@ -131,37 +115,69 @@ export default meta
 type Story = StoryObj<typeof meta>
 
 // Decorator to wrap the component with our mock provider
-const withMockedTasks = (Story, { args }) => {
-  return (
-    <MockedTasksProvider mockState={args.mockState || 'withTasks'}>
-      <Story />
-    </MockedTasksProvider>
+// Define the StoryWrapper component outside the decorator
+const StoryWrapper = ({
+  Story,
+  context,
+  mockState,
+}: {
+  Story: StoryFn
+  context: StoryContext
+  mockState: 'loading' | 'error' | 'empty' | 'withTasks'
+}) => {
+  // Store original hook ref inside the wrapper
+  const originalUseTasksRef = React.useRef(hooks.useTasks)
+
+  // Memoize the mock function creation
+  const mockUseTasks = React.useMemo(
+    () => createMockUseTasks(mockState),
+    [mockState]
   )
+
+  // Apply mock on mount, restore on unmount using useEffect
+  React.useEffect(() => {
+    // @ts-ignore - Override hook for Storybook
+    hooks.useTasks = mockUseTasks
+    return () => {
+      // @ts-ignore - Restore original hook
+      hooks.useTasks = originalUseTasksRef.current
+    }
+  }, [mockUseTasks]) // Dependency ensures effect runs if mock function changes
+
+  // Render the original Story function with its args and context
+  return Story(context.args, context)
+}
+
+// Decorator function returns an instance of the StoryWrapper component
+const withMockedTasks = (Story: StoryFn, context: StoryContext) => {
+  const mockState = context.parameters.mockState || 'withTasks'
+  // Directly return the JSX element
+  return <StoryWrapper Story={Story} context={context} mockState={mockState} />
 }
 
 export const WithTasks: Story = {
-  args: {
+  parameters: {
     mockState: 'withTasks',
   },
   decorators: [withMockedTasks],
 }
 
 export const Loading: Story = {
-  args: {
+  parameters: {
     mockState: 'loading',
   },
   decorators: [withMockedTasks],
 }
 
 export const Error: Story = {
-  args: {
+  parameters: {
     mockState: 'error',
   },
   decorators: [withMockedTasks],
 }
 
 export const Empty: Story = {
-  args: {
+  parameters: {
     mockState: 'empty',
   },
   decorators: [withMockedTasks],
@@ -169,24 +185,30 @@ export const Empty: Story = {
 
 export const WithSearchTerm: Story = {
   args: {
-    mockState: 'withTasks',
     searchTerm: '検索キーワード',
+  },
+  parameters: {
+    mockState: 'withTasks',
   },
   decorators: [withMockedTasks],
 }
 
 export const WithParentId: Story = {
   args: {
-    mockState: 'withTasks',
     parentId: 'parent-task-1',
+  },
+  parameters: {
+    mockState: 'withTasks',
   },
   decorators: [withMockedTasks],
 }
 
 export const WithLabelId: Story = {
   args: {
-    mockState: 'withTasks',
     labelId: 'label-1',
+  },
+  parameters: {
+    mockState: 'withTasks',
   },
   decorators: [withMockedTasks],
 }

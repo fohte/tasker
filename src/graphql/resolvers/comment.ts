@@ -1,4 +1,9 @@
-import { GraphQLContext, Comment, CreateCommentInput, UpdateCommentInput } from '../types'
+import {
+  GraphQLContext,
+  Comment,
+  CreateCommentInput,
+  UpdateCommentInput,
+} from '../types'
 import { tasks } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 
@@ -6,23 +11,35 @@ import { eq } from 'drizzle-orm'
 
 export const commentResolvers = {
   Query: {
-    comments: async (_: unknown, args: { taskId: string }, ctx: GraphQLContext) => {
+    comments: async (
+      _: unknown,
+      args: { taskId: string },
+      ctx: GraphQLContext
+    ) => {
       // コメントテーブルがまだ存在しないため、空の配列を返す
       return []
-    }
+    },
   },
-  
+
   Mutation: {
-    createComment: async (_: unknown, args: { input: CreateCommentInput }, ctx: GraphQLContext) => {
+    createComment: async (
+      _: unknown,
+      args: { input: CreateCommentInput },
+      ctx: GraphQLContext
+    ) => {
       const { taskId, content } = args.input
-      
+
       // タスクの存在確認
-      const task = await ctx.db.select().from(tasks).where(eq(tasks.id, taskId)).get()
-      
+      const task = await ctx.db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.id, taskId))
+        .get()
+
       if (!task) {
         throw new Error(`Task with ID ${taskId} not found`)
       }
-      
+
       // コメントテーブルがまだないため、仮の実装
       const newComment = {
         id: Math.floor(Math.random() * 1000), // 仮のID
@@ -31,49 +48,69 @@ export const commentResolvers = {
         task: {
           ...task,
           status: task.state,
-          createdAt: task.createdAt ? new Date(task.createdAt).toISOString() : new Date().toISOString(),
-          updatedAt: task.updatedAt ? new Date(task.updatedAt).toISOString() : new Date().toISOString(),
-        }
+          createdAt: task.createdAt
+            ? new Date(task.createdAt).toISOString()
+            : new Date().toISOString(),
+          updatedAt: task.updatedAt
+            ? new Date(task.updatedAt).toISOString()
+            : new Date().toISOString(),
+        },
       }
-      
+
       return newComment
     },
-    
-    updateComment: async (_: unknown, args: { id: number, input: UpdateCommentInput }, ctx: GraphQLContext) => {
+
+    updateComment: async (
+      _: unknown,
+      args: { id: number; input: UpdateCommentInput },
+      ctx: GraphQLContext
+    ) => {
       // コメントテーブルがまだないため、null を返す
       return null
     },
-    
-    deleteComment: async (_: unknown, args: { id: number }, ctx: GraphQLContext) => {
+
+    deleteComment: async (
+      _: unknown,
+      args: { id: number },
+      ctx: GraphQLContext
+    ) => {
       // コメントテーブルがまだないため、null を返す
       return null
-    }
+    },
   },
-  
+
   Comment: {
     task: async (parent: Comment, _: unknown, ctx: GraphQLContext) => {
       if (parent.task) return parent.task
-      
+
       // Comment型では task が必須だが、実行時に undefined の可能性がある
       // TypeScriptの型システムでは解決できないので、実装側で対応
       // エラーを回避するためにparent.task as any を使用
       const taskId = (parent.task as any)?.id
-      
+
       if (!taskId) {
         throw new Error('Comment is missing task ID')
       }
-      
+
       // タスクの取得
-      const task = await ctx.db.select().from(tasks).where(eq(tasks.id, taskId)).get()
-      
+      const task = await ctx.db
+        .select()
+        .from(tasks)
+        .where(eq(tasks.id, taskId))
+        .get()
+
       if (!task) return null
-      
+
       return {
         ...task,
         status: task.state,
-        createdAt: task.createdAt ? new Date(task.createdAt).toISOString() : new Date().toISOString(),
-        updatedAt: task.updatedAt ? new Date(task.updatedAt).toISOString() : new Date().toISOString(),
+        createdAt: task.createdAt
+          ? new Date(task.createdAt).toISOString()
+          : new Date().toISOString(),
+        updatedAt: task.updatedAt
+          ? new Date(task.updatedAt).toISOString()
+          : new Date().toISOString(),
       }
-    }
-  }
+    },
+  },
 }

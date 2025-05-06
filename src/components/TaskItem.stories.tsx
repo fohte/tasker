@@ -1,6 +1,6 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import { TaskItem } from './TaskItem';
+import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
+import { TaskItem } from './TaskItem'
 
 const meta = {
   title: 'Components/TaskItem',
@@ -10,21 +10,21 @@ const meta = {
   },
   tags: ['autodocs'],
   argTypes: {
-    status: { 
-      control: 'select', 
-      options: ['todo', 'in_progress', 'done', 'cancelled'] 
+    status: {
+      control: 'select',
+      options: ['todo', 'in_progress', 'done', 'cancelled'],
     },
     compact: { control: 'boolean' },
   },
-  args: { 
+  args: {
     onClick: fn(),
     onStatusChange: fn(),
     onDelete: fn(),
   },
-} satisfies Meta<typeof TaskItem>;
+} satisfies Meta<typeof TaskItem>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 export const Todo: Story = {
   args: {
@@ -34,7 +34,7 @@ export const Todo: Story = {
     status: 'todo',
     dueAt: '2025-12-31T00:00:00.000Z',
   },
-};
+}
 
 export const InProgress: Story = {
   args: {
@@ -44,7 +44,7 @@ export const InProgress: Story = {
     status: 'in_progress',
     dueAt: '2025-06-30T00:00:00.000Z',
   },
-};
+}
 
 export const Done: Story = {
   args: {
@@ -54,7 +54,7 @@ export const Done: Story = {
     status: 'done',
     dueAt: '2025-01-15T00:00:00.000Z',
   },
-};
+}
 
 export const Cancelled: Story = {
   args: {
@@ -64,7 +64,7 @@ export const Cancelled: Story = {
     status: 'cancelled',
     dueAt: null,
   },
-};
+}
 
 export const Compact: Story = {
   args: {
@@ -75,17 +75,18 @@ export const Compact: Story = {
     dueAt: '2025-10-01T00:00:00.000Z',
     compact: true,
   },
-};
+}
 
 export const LongDescription: Story = {
   args: {
     id: 'task-6',
     title: '長い説明のタスク',
-    description: 'これは非常に長い説明文です。説明が長すぎる場合、UI上で適切に表示されるかテストします。長いテキストは省略されて、「...」で表示される必要があります。これによりUIのレイアウトが崩れないようにします。',
+    description:
+      'これは非常に長い説明文です。説明が長すぎる場合、UI上で適切に表示されるかテストします。長いテキストは省略されて、「...」で表示される必要があります。これによりUIのレイアウトが崩れないようにします。',
     status: 'todo',
     dueAt: '2025-08-15T00:00:00.000Z',
   },
-};
+}
 
 export const NoDescription: Story = {
   args: {
@@ -95,7 +96,7 @@ export const NoDescription: Story = {
     status: 'todo',
     dueAt: '2025-05-20T00:00:00.000Z',
   },
-};
+}
 
 export const NoDueDate: Story = {
   args: {
@@ -105,4 +106,4 @@ export const NoDueDate: Story = {
     status: 'todo',
     dueAt: null,
   },
-};
+}

@@ -1,23 +1,28 @@
-'use client';
+'use client'
 
-import { useTasks } from '@/lib/hooks';
-import { TaskItem } from '@/components/TaskItem';
+import { useTasks } from '@/lib/hooks'
+import { TaskItem } from '@/components/TaskItem'
 
 // タスクリストコンポーネント
 interface TaskListProps {
-  searchTerm?: string;
-  parentId?: string;
-  labelId?: string;
-  onTaskClick?: (taskId: string) => void;
+  searchTerm?: string
+  parentId?: string
+  labelId?: string
+  onTaskClick?: (taskId: string) => void
 }
 
-export function TaskList({ searchTerm, parentId, labelId, onTaskClick }: TaskListProps) {
+export function TaskList({
+  searchTerm,
+  parentId,
+  labelId,
+  onTaskClick,
+}: TaskListProps) {
   // SWRを使用してデータを取得
-  const { data, error, isLoading, mutate } = useTasks({ 
-    search: searchTerm, 
-    parentId, 
-    labelId 
-  });
+  const { data, error, isLoading, mutate } = useTasks({
+    search: searchTerm,
+    parentId,
+    labelId,
+  })
 
   // ローディング中の表示
   if (isLoading) {
@@ -25,7 +30,7 @@ export function TaskList({ searchTerm, parentId, labelId, onTaskClick }: TaskLis
       <div className="p-4 text-center">
         <p className="text-gray-500">読み込み中...</p>
       </div>
-    );
+    )
   }
 
   // エラー時の表示
@@ -33,14 +38,14 @@ export function TaskList({ searchTerm, parentId, labelId, onTaskClick }: TaskLis
     return (
       <div className="p-4 text-center">
         <p className="text-red-500">タスクの取得中にエラーが発生しました。</p>
-        <button 
+        <button
           className="mt-2 px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 transition-colors"
           onClick={() => mutate()}
         >
           再試行
         </button>
       </div>
-    );
+    )
   }
 
   // データがない場合
@@ -49,7 +54,7 @@ export function TaskList({ searchTerm, parentId, labelId, onTaskClick }: TaskLis
       <div className="p-4 text-center">
         <p className="text-gray-500">タスクがありません</p>
       </div>
-    );
+    )
   }
 
   // タスク一覧の表示
@@ -69,5 +74,5 @@ export function TaskList({ searchTerm, parentId, labelId, onTaskClick }: TaskLis
         />
       ))}
     </div>
-  );
+  )
 }

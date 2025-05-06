@@ -26,7 +26,7 @@ vi.mock('swr', async () => {
         mutate: vi.fn(),
         ...hookResult,
       }
-    })
+    }),
   }
 })
 

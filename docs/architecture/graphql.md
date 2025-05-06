@@ -96,7 +96,6 @@ type Mutation {
   createTask(input: CreateTaskInput!): Task!
   updateTask(id: ID!, input: UpdateTaskInput!): Task # Returns updated task or null if not found
   deleteTask(id: ID!): ID # Returns ID of deleted task or null
-
   # Label Mutations
   createLabel(input: CreateLabelInput!): Label!
   updateLabel(id: ID!, input: UpdateLabelInput!): Label
@@ -105,7 +104,6 @@ type Mutation {
   # Task <-> Label Association
   addTaskLabel(taskId: ID!, labelId: ID!): Task # Returns updated task
   removeTaskLabel(taskId: ID!, labelId: ID!): Task # Returns updated task
-
   # Comment Mutations
   createComment(input: CreateCommentInput!): Comment!
   updateComment(id: ID!, input: UpdateCommentInput!): Comment

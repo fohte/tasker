@@ -1,14 +1,14 @@
-import { defineConfig } from 'drizzle-kit';
-import '@dotenvx/dotenvx/config'; // Use dotenvx
+import { defineConfig } from 'drizzle-kit'
+import '@dotenvx/dotenvx/config' // Use dotenvx
 
 if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
-  throw new Error('CLOUDFLARE_ACCOUNT_ID environment variable is not set');
+  throw new Error('CLOUDFLARE_ACCOUNT_ID environment variable is not set')
 }
 if (!process.env.CLOUDFLARE_DATABASE_ID) {
-  throw new Error('CLOUDFLARE_DATABASE_ID environment variable is not set');
+  throw new Error('CLOUDFLARE_DATABASE_ID environment variable is not set')
 }
 if (!process.env.CLOUDFLARE_API_TOKEN) {
-  throw new Error('CLOUDFLARE_API_TOKEN environment variable is not set');
+  throw new Error('CLOUDFLARE_API_TOKEN environment variable is not set')
 }
 
 export default defineConfig({
@@ -24,4 +24,4 @@ export default defineConfig({
   },
   verbose: true,
   strict: true,
-});
+})

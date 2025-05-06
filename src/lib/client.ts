@@ -1,77 +1,79 @@
-import { GraphQLClient } from 'graphql-request';
+import { GraphQLClient } from 'graphql-request'
 
 // GraphQLクライアントのインスタンスを作成
 // API URLは環境に応じて変更
-const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/graphql';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || '/api/graphql'
 
 export const graphqlClient = new GraphQLClient(API_URL, {
   headers: {
     'Content-Type': 'application/json',
   },
-});
+})
 
 // クエリとミューテーションの型を定義するためのユーティリティ
-export type Maybe<T> = T | null;
-export type InputMaybe<T> = Maybe<T>;
-export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
+export type Maybe<T> = T | null
+export type InputMaybe<T> = Maybe<T>
+export type Exact<T extends { [key: string]: unknown }> = {
+  [K in keyof T]: T[K]
+}
 
 // GraphQLのクエリやミューテーションの結果型
 export interface TasksQueryResult {
   tasks: Array<{
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    dueAt?: string | null;
-  }>;
+    id: string
+    title: string
+    description?: string | null
+    status: string
+    createdAt: string
+    updatedAt: string
+    dueAt?: string | null
+  }>
 }
 
 export interface TaskQueryResult {
   task: {
-    id: string;
-    title: string;
-    description?: string | null;
-    status: string;
-    createdAt: string;
-    updatedAt: string;
-    dueAt?: string | null;
+    id: string
+    title: string
+    description?: string | null
+    status: string
+    createdAt: string
+    updatedAt: string
+    dueAt?: string | null
     parent?: {
-      id: string;
-      title: string;
-    } | null;
+      id: string
+      title: string
+    } | null
     children?: Array<{
-      id: string;
-      title: string;
-      status: string;
-    }> | null;
+      id: string
+      title: string
+      status: string
+    }> | null
     labels?: Array<{
-      id: string;
-      name: string;
-      color?: string | null;
-    }> | null;
-  } | null;
+      id: string
+      name: string
+      color?: string | null
+    }> | null
+  } | null
 }
 
 export interface CreateTaskMutationResult {
   createTask: {
-    id: string;
-    title: string;
-    status: string;
-  };
+    id: string
+    title: string
+    status: string
+  }
 }
 
 export interface UpdateTaskMutationResult {
   updateTask: {
-    id: string;
-    title: string;
-    status: string;
-  } | null;
+    id: string
+    title: string
+    status: string
+  } | null
 }
 
 export interface DeleteTaskMutationResult {
-  deleteTask: string | null;
+  deleteTask: string | null
 }
 
 // GraphQLのクエリ
@@ -130,7 +132,7 @@ export const queries = {
       }
     }
   `,
-};
+}
 
 // GraphQLのミューテーション
 export const mutations = {
@@ -162,4 +164,4 @@ export const mutations = {
       deleteTask(id: $id)
     }
   `,
-};
+}

@@ -1,20 +1,20 @@
-import type { Meta, StoryObj } from '@storybook/react';
-import { fn } from '@storybook/test';
-import React from 'react';
-import { TaskList } from './TaskList';
-import * as hooks from '@/lib/hooks';
+import type { Meta, StoryObj } from '@storybook/react'
+import { fn } from '@storybook/test'
+import React from 'react'
+import { TaskList } from './TaskList'
+import * as hooks from '@/lib/hooks'
 
 // Create a wrapper to mock the useTasks hook
 const MockedTasksProvider = ({
   children,
   mockState,
 }: {
-  children: React.ReactNode;
-  mockState: 'loading' | 'error' | 'empty' | 'withTasks';
+  children: React.ReactNode
+  mockState: 'loading' | 'error' | 'empty' | 'withTasks'
 }) => {
   // Override the useTasks implementation for Storybook
-  const originalUseTasks = hooks.useTasks;
-  
+  const originalUseTasks = hooks.useTasks
+
   // @ts-ignore - for Storybook mock purposes
   hooks.useTasks = () => {
     switch (mockState) {
@@ -25,7 +25,7 @@ const MockedTasksProvider = ({
           isLoading: true,
           isValidating: false,
           mutate: fn(),
-        };
+        }
       case 'error':
         return {
           data: undefined,
@@ -33,7 +33,7 @@ const MockedTasksProvider = ({
           isLoading: false,
           isValidating: false,
           mutate: fn(),
-        };
+        }
       case 'empty':
         return {
           data: { tasks: [] },
@@ -41,7 +41,7 @@ const MockedTasksProvider = ({
           isLoading: false,
           isValidating: false,
           mutate: fn(),
-        };
+        }
       case 'withTasks':
       default:
         return {
@@ -82,27 +82,27 @@ const MockedTasksProvider = ({
                 createdAt: '2024-12-10T00:00:00.000Z',
                 updatedAt: '2024-12-20T00:00:00.000Z',
                 dueAt: null,
-              }
-            ]
+              },
+            ],
           },
           error: undefined,
           isLoading: false,
           isValidating: false,
           mutate: fn(),
-        };
+        }
     }
-  };
+  }
 
   // Restore the original implementation when the component unmounts
   React.useEffect(() => {
     return () => {
       // @ts-ignore - for Storybook mock purposes
-      hooks.useTasks = originalUseTasks;
-    };
-  }, [originalUseTasks]);
+      hooks.useTasks = originalUseTasks
+    }
+  }, [originalUseTasks])
 
-  return <>{children}</>;
-};
+  return <>{children}</>
+}
 
 const meta = {
   title: 'Components/TaskList',
@@ -125,10 +125,10 @@ const meta = {
   args: {
     onTaskClick: fn(),
   },
-} satisfies Meta<typeof TaskList>;
+} satisfies Meta<typeof TaskList>
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
 // Decorator to wrap the component with our mock provider
 const withMockedTasks = (Story, { args }) => {
@@ -136,36 +136,36 @@ const withMockedTasks = (Story, { args }) => {
     <MockedTasksProvider mockState={args.mockState || 'withTasks'}>
       <Story />
     </MockedTasksProvider>
-  );
-};
+  )
+}
 
 export const WithTasks: Story = {
   args: {
     mockState: 'withTasks',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const Loading: Story = {
   args: {
     mockState: 'loading',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const Error: Story = {
   args: {
     mockState: 'error',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const Empty: Story = {
   args: {
     mockState: 'empty',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const WithSearchTerm: Story = {
   args: {
@@ -173,7 +173,7 @@ export const WithSearchTerm: Story = {
     searchTerm: '検索キーワード',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const WithParentId: Story = {
   args: {
@@ -181,7 +181,7 @@ export const WithParentId: Story = {
     parentId: 'parent-task-1',
   },
   decorators: [withMockedTasks],
-};
+}
 
 export const WithLabelId: Story = {
   args: {
@@ -189,4 +189,4 @@ export const WithLabelId: Story = {
     labelId: 'label-1',
   },
   decorators: [withMockedTasks],
-};
+}

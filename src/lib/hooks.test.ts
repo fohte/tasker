@@ -51,23 +51,23 @@ describe('Hooks', () => {
       // SWRがコールされたことを確認するだけで十分
       expect(true).toBeTruthy()
     })
-    
+
     it('passes parentId to SWR', () => {
       renderHook(() => useTasks({ parentId: 'parent-1' }))
       // SWRがコールされたことを確認するだけで十分
       expect(true).toBeTruthy()
     })
-    
+
     it('passes labelId to SWR', () => {
       renderHook(() => useTasks({ labelId: 'label-1' }))
       // SWRがコールされたことを確認するだけで十分
       expect(true).toBeTruthy()
     })
-    
+
     it('passes configuration to SWR', () => {
       const config = { revalidateOnFocus: false }
       renderHook(() => useTasks({}, config))
-      
+
       // SWRがコールされたことを確認するだけで十分
       // 特に追加の検証はスキップ
       expect(true).toBeTruthy()
@@ -80,7 +80,7 @@ describe('Hooks', () => {
       // SWRがコールされたことを確認するだけで十分
       expect(true).toBeTruthy()
     })
-    
+
     it('returns null key when id is null', () => {
       renderHook(() => useTask(null))
       // SWRがコールされたことを確認するだけで十分
@@ -90,36 +90,42 @@ describe('Hooks', () => {
 
   describe('taskMutations', () => {
     it('calls createTask with correct parameters', async () => {
-      vi.mocked(graphqlClient.request).mockResolvedValueOnce({ createTask: { id: 'new-task' } })
-      
+      vi.mocked(graphqlClient.request).mockResolvedValueOnce({
+        createTask: { id: 'new-task' },
+      })
+
       const input = { title: 'New Task', description: 'Description' }
       await taskMutations.createTask(input)
-      
+
       expect(graphqlClient.request).toHaveBeenCalledWith(
         'mutation CREATE_TASK_MUTATION',
         { input }
       )
     })
-    
+
     it('calls updateTask with correct parameters', async () => {
-      vi.mocked(graphqlClient.request).mockResolvedValueOnce({ updateTask: { id: 'task-1' } })
-      
+      vi.mocked(graphqlClient.request).mockResolvedValueOnce({
+        updateTask: { id: 'task-1' },
+      })
+
       const id = 'task-1'
       const input = { title: 'Updated Task' }
       await taskMutations.updateTask(id, input)
-      
+
       expect(graphqlClient.request).toHaveBeenCalledWith(
         'mutation UPDATE_TASK_MUTATION',
         { id, input }
       )
     })
-    
+
     it('calls deleteTask with correct parameters', async () => {
-      vi.mocked(graphqlClient.request).mockResolvedValueOnce({ deleteTask: 'task-1' })
-      
+      vi.mocked(graphqlClient.request).mockResolvedValueOnce({
+        deleteTask: 'task-1',
+      })
+
       const id = 'task-1'
       await taskMutations.deleteTask(id)
-      
+
       expect(graphqlClient.request).toHaveBeenCalledWith(
         'mutation DELETE_TASK_MUTATION',
         { id }

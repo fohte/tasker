@@ -12,12 +12,12 @@ export default defineConfig({
     coverage: {
       provider: 'istanbul',
       reporter: ['text', 'html', 'lcov'],
-      exclude: ['node_modules/', '.next/', 'coverage/']
-    }
+      exclude: ['node_modules/', '.next/', 'coverage/'],
+    },
   },
   resolve: {
     alias: {
-      '@': resolve(__dirname, './src')
-    }
-  }
+      '@': resolve(__dirname, './src'),
+    },
+  },
 })

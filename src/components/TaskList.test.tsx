@@ -9,7 +9,7 @@ vi.mock('@/lib/hooks', () => ({
   taskMutations: {
     updateTask: vi.fn(),
     deleteTask: vi.fn(),
-  }
+  },
 }))
 
 describe('TaskList Component', () => {
@@ -21,7 +21,7 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList />)
     expect(screen.getByText('読み込み中...')).toBeInTheDocument()
   })
@@ -34,9 +34,11 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList />)
-    expect(screen.getByText('タスクの取得中にエラーが発生しました。')).toBeInTheDocument()
+    expect(
+      screen.getByText('タスクの取得中にエラーが発生しました。')
+    ).toBeInTheDocument()
     expect(screen.getByText('再試行')).toBeInTheDocument()
   })
 
@@ -48,7 +50,7 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList />)
     expect(screen.getByText('タスクがありません')).toBeInTheDocument()
   })
@@ -82,9 +84,9 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList />)
-    
+
     expect(screen.getByText('タスク1')).toBeInTheDocument()
     expect(screen.getByText('タスク2')).toBeInTheDocument()
   })
@@ -97,15 +99,17 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList searchTerm="検索テキスト" />)
-    
+
     // 第2引数は省略可能なのでチェックしない
-    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
-      search: '検索テキスト',
-      parentId: undefined,
-      labelId: undefined,
-    }))
+    expect(useTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: '検索テキスト',
+        parentId: undefined,
+        labelId: undefined,
+      })
+    )
   })
 
   it('passes parentId parameter to useTasks', () => {
@@ -116,14 +120,16 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList parentId="parent-1" />)
-    
-    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
-      search: undefined,
-      parentId: 'parent-1',
-      labelId: undefined,
-    }))
+
+    expect(useTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: undefined,
+        parentId: 'parent-1',
+        labelId: undefined,
+      })
+    )
   })
 
   it('passes labelId parameter to useTasks', () => {
@@ -134,16 +140,18 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     render(<TaskList labelId="label-1" />)
-    
-    expect(useTasks).toHaveBeenCalledWith(expect.objectContaining({
-      search: undefined,
-      parentId: undefined,
-      labelId: 'label-1',
-    }))
+
+    expect(useTasks).toHaveBeenCalledWith(
+      expect.objectContaining({
+        search: undefined,
+        parentId: undefined,
+        labelId: 'label-1',
+      })
+    )
   })
-  
+
   it('calls onTaskClick when a task is clicked', () => {
     const mockTasks = [
       {
@@ -154,7 +162,7 @@ describe('TaskList Component', () => {
         createdAt: '2025-01-01T00:00:00.000Z',
         updatedAt: '2025-01-01T00:00:00.000Z',
         dueAt: '2025-12-31T00:00:00.000Z',
-      }
+      },
     ]
 
     vi.mocked(useTasks).mockReturnValue({
@@ -164,14 +172,14 @@ describe('TaskList Component', () => {
       isValidating: false,
       mutate: vi.fn(),
     })
-    
+
     const onTaskClickMock = vi.fn()
-    
+
     // TaskItemコンポーネントはモックされていないため、実際にクリックイベントは
     // TaskItemコンポーネント内で処理されます。
     // このテストでは、TaskList内でonTaskClickが正しく渡されることを検証します。
     render(<TaskList onTaskClick={onTaskClickMock} />)
-    
+
     // TaskItemにonClickプロップが渡されていることを検証
     const taskItem = screen.getByText('タスク1').closest('div')
     expect(taskItem).toBeInTheDocument()

@@ -1,10 +1,19 @@
 'use client'
 
 import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
-import { graphqlClient, queries, mutations, TasksQueryResult, TaskQueryResult } from './client'
+import {
+  graphqlClient,
+  queries,
+  mutations,
+  TasksQueryResult,
+  TaskQueryResult,
+} from './client'
 
 // GraphQLのフェッチャー関数
-const graphqlFetcher = async <T>(query: string, variables?: any): Promise<T> => {
+const graphqlFetcher = async <T>(
+  query: string,
+  variables?: any
+): Promise<T> => {
   return graphqlClient.request<T>(query, variables)
 }
 
@@ -14,7 +23,7 @@ export function useTasks(
   config?: SWRConfiguration
 ): SWRResponse<TasksQueryResult> {
   const { search, parentId, labelId } = params || {}
-  
+
   return useSWR(
     [queries.TASKS_QUERY, { search, parentId, labelId }],
     ([query, variables]) => graphqlFetcher<TasksQueryResult>(query, variables),
@@ -46,26 +55,32 @@ export function useTask(
 // データミューテーション用のユーティリティ
 export const taskMutations = {
   // タスク作成
-  createTask: async (input: { title: string; description?: string; status?: string; parentId?: string; dueAt?: string }) => {
-    return graphqlClient.request(
-      mutations.CREATE_TASK_MUTATION,
-      { input }
-    )
+  createTask: async (input: {
+    title: string
+    description?: string
+    status?: string
+    parentId?: string
+    dueAt?: string
+  }) => {
+    return graphqlClient.request(mutations.CREATE_TASK_MUTATION, { input })
   },
-  
+
   // タスク更新
-  updateTask: async (id: string, input: { title?: string; description?: string; status?: string; parentId?: string; dueAt?: string }) => {
-    return graphqlClient.request(
-      mutations.UPDATE_TASK_MUTATION,
-      { id, input }
-    )
+  updateTask: async (
+    id: string,
+    input: {
+      title?: string
+      description?: string
+      status?: string
+      parentId?: string
+      dueAt?: string
+    }
+  ) => {
+    return graphqlClient.request(mutations.UPDATE_TASK_MUTATION, { id, input })
   },
-  
+
   // タスク削除
   deleteTask: async (id: string) => {
-    return graphqlClient.request(
-      mutations.DELETE_TASK_MUTATION,
-      { id }
-    )
-  }
+    return graphqlClient.request(mutations.DELETE_TASK_MUTATION, { id })
+  },
 }

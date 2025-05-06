@@ -14,24 +14,24 @@ export default function Home() {
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreatingTask, setIsCreatingTask] = useState(false)
   const [error, setError] = useState<string | null>(null)
-  
+
   // SWRでタスクデータを取得
   const { mutate: refreshTasks } = useTasks({
-    search: searchTerm || undefined
-  });
+    search: searchTerm || undefined,
+  })
 
   // タスク作成を処理する関数
   const handleAddTask = async () => {
     if (newTaskText.trim() === '') return
-    
+
     setIsCreatingTask(true)
     setError(null)
-    
+
     try {
       await taskMutations.createTask({
         title: newTaskText.trim(),
       })
-      
+
       setNewTaskText('') // 入力をクリア
       // タスク一覧を更新
       refreshTasks()
@@ -65,7 +65,7 @@ export default function Home() {
   return (
     <main className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-6">Tasker</h1>
-      
+
       {/* タスク作成フォーム */}
       <div className="flex gap-2 mb-6">
         <Input
@@ -77,20 +77,18 @@ export default function Home() {
           className="flex-grow"
           disabled={isCreatingTask}
         />
-        <Button 
+        <Button
           onClick={handleAddTask}
           disabled={isCreatingTask || newTaskText.trim() === ''}
         >
           {isCreatingTask ? '追加中...' : 'タスク追加'}
         </Button>
       </div>
-      
+
       {error && (
-        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">
-          {error}
-        </div>
+        <div className="mb-4 p-3 bg-red-100 text-red-700 rounded">{error}</div>
       )}
-      
+
       {/* 検索フォーム */}
       <div className="mb-6">
         <Input
@@ -101,11 +99,11 @@ export default function Home() {
           className="w-full"
         />
       </div>
-      
+
       {/* タスクリスト */}
       <div className="bg-white rounded-lg shadow p-6">
         <h2 className="text-xl font-semibold mb-6">タスク一覧</h2>
-        <TaskList 
+        <TaskList
           searchTerm={searchTerm || undefined}
           onTaskClick={handleTaskClick}
         />

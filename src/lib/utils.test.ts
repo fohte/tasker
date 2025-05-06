@@ -8,7 +8,7 @@ describe('cn utility function', () => {
   })
 
   it('handles conditional classes', () => {
-    const result = cn('class1', { 'class2': true, 'class3': false })
+    const result = cn('class1', { class2: true, class3: false })
     expect(result).toBe('class1 class2')
   })
 
@@ -20,9 +20,9 @@ describe('cn utility function', () => {
   it('handles multiple conditions', () => {
     const result = cn(
       'base-class',
-      { 'active': true, 'disabled': false },
+      { active: true, disabled: false },
       'extra',
-      { 'dark': true, 'light': false }
+      { dark: true, light: false }
     )
     expect(result).toBe('base-class active extra dark')
   })

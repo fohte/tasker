@@ -14,7 +14,7 @@ const typeDefs = readFileSync(
 // スキーマを作成
 const schema = makeExecutableSchema({
   typeDefs,
-  resolvers
+  resolvers,
 })
 
 // Yogaサーバーを作成

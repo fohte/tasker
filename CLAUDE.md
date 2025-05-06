@@ -4,14 +4,12 @@ This file provides guidance to LLMs (like [Claude Code](claude.ai/code)) when wo
 
 ## Implementation Guidelines
 
-- **MUST** read `docs/todo.md` and implement the **first unchecked task only**
-- **MUST** insert tasks into todo.md if new tasks are identified
 - **MUST** follow steps after each task
   - Update `docs/todo.md` (mark as done)
   - Commit all changes (use `git add .` to stage all changes, including new files and folders)
   - Run the test using `bun run test` and fix if it fails
-- **NEVER** disable tests or checks to make commits pass; always fix the underlying issues
 - **NEVER** group multiple tasks in one commit
+- **NEVER** disable tests or checks to make commits pass; always fix the underlying issues
 - **MUST** follow Conventional Commits format like:
 
   ```

@@ -12,6 +12,7 @@ const config: StorybookConfig = {
     },
     '@storybook/addon-onboarding',
     '@storybook/addon-interactions',
+    '@storybook/experimental-addon-test',
   ],
   framework: {
     name: '@storybook/nextjs',

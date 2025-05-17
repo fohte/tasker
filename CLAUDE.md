@@ -7,7 +7,7 @@ This file provides guidance to LLMs (like [Claude Code](claude.ai/code)) when wo
 - **MUST** follow steps after each task
   - Update `docs/todo.md` (mark as done)
   - Commit all changes (use `git add .` to stage all changes, including new files and folders)
-  - Run the test using `bun run test` and fix if it fails
+  - Run the test using `pnpm run test` and fix if it fails
 - **NEVER** group multiple tasks in one commit
 - **NEVER** disable tests or checks to make commits pass; always fix the underlying issues
 - **MUST** follow Conventional Commits format like:
@@ -22,16 +22,16 @@ This file provides guidance to LLMs (like [Claude Code](claude.ai/code)) when wo
 
 ## Build & Development Commands
 
-- Build: `bun run build`
-- Dev server: `bun run dev`
-- Lint: `bun run lint`
-- Test: `bun run test`
-- Typecheck: `bun run typecheck`
-- Storybook: `bun run storybook`
+- Build: `pnpm run build`
+- Dev server: `pnpm run dev`
+- Lint: `pnpm run lint`
+- Test: `pnpm run test`
+- Typecheck: `pnpm run typecheck`
+- Storybook: `pnpm run storybook`
 - Database:
-  - Generate migrations: `bun run db:generate`
-  - Run migrations: `bun run db:migrate`
-  - Database UI: `bun run db:studio`
+  - Generate migrations: `pnpm run db:generate`
+  - Run migrations: `pnpm run db:migrate`
+  - Database UI: `pnpm run db:studio`
 
 ## Code Style Guidelines
 

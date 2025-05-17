@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
+#!/bin/sh
 
-set -euxo pipefail
+set -eu
 
-bunx lint-staged
+pnpm exec lint-staged

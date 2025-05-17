@@ -20,6 +20,7 @@
   "dependencies": {
     "@cloudflare/next-on-pages": "^1.13.12",
     "@dotenvx/dotenvx": "^1.41.0",
+    "@graphql-tools/schema": "^10.0.23",
     "@radix-ui/react-slot": "^1.2.0",
     "@vitest/coverage-istanbul": "^3.1.2",
     "class-variance-authority": "^0.7.1",

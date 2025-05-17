@@ -11,10 +11,7 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "test:unit": "vitest run --project unit && tsc --noEmit",
-    "test:storybook": "vitest --project=storybook",
     "typecheck": "tsc --noEmit",
-    "storybook": "storybook dev -p 6006",
-    "build-storybook": "storybook build",
     "prepare": "husky"
   },
   "dependencies": {
@@ -39,14 +36,6 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20250428.0",
     "@eslint/eslintrc": "^3",
-    "@storybook/addon-essentials": "^8.6.12",
-    "@storybook/addon-interactions": "^8.6.12",
-    "@storybook/addon-onboarding": "^8.6.12",
-    "@storybook/blocks": "^8.6.12",
-    "@storybook/experimental-addon-test": "8.6.12",
-    "@storybook/nextjs": "^8.6.12",
-    "@storybook/react": "^8.6.12",
-    "@storybook/test": "8.6.12",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/react": "^16.3.0",
@@ -60,21 +49,17 @@
     "drizzle-kit": "^0.31.0",
     "eslint": "^9",
     "eslint-config-next": "15.3.1",
-    "eslint-plugin-storybook": "^0.12.0",
     "husky": "^9.1.7",
     "jsdom": "^26.1.0",
     "lint-staged": "^15.5.1",
     "prettier": "3.5.3",
-    "storybook": "^8.6.12",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.8",
     "typescript": "^5",
     "vitest": "3.1.3"
   },
   "eslintConfig": {
-    "extends": [
-      "plugin:storybook/recommended"
-    ]
+    "extends": []
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"

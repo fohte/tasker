@@ -16,7 +16,7 @@ export default defineWorkspace([
         configDir: path.join(dirname, '.storybook'),
         // This should match your package.json script to run Storybook
         // The --ci flag will skip prompts and not open a browser
-        storybookScript: 'bun run storybook --ci',
+        storybookScript: 'pnpm run storybook --ci',
       }),
     ],
     test: {

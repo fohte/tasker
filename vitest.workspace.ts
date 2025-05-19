@@ -21,15 +21,8 @@ export default defineWorkspace([
     ],
     test: {
       name: 'storybook',
-      // Enable browser mode
-      browser: {
-        enabled: true,
-        name: 'chromium',
-        // Make sure to install Playwright
-        provider: 'playwright',
-        headless: true,
-      },
-      setupFiles: ['./.storybook/vitest.setup.ts'],
+      environment: 'jsdom',
+      // setupFiles not required for now
     },
   },
 ])

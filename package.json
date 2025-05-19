@@ -2,6 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
+  "packageManager": "pnpm@10.11.0",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -11,8 +12,9 @@
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
     "test:unit": "vitest run --project unit && tsc --noEmit",
-    "test:storybook": "vitest --project=storybook",
+    "test:storybook": "vitest run --project=storybook",
     "typecheck": "tsc --noEmit",
+    "test": "pnpm run typecheck && pnpm run test:unit && pnpm run test:storybook",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build",
     "prepare": "husky"

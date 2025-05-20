@@ -171,6 +171,7 @@
 - [x] 5.1.5. CI/CDでのテスト実行の自動化
 - [ ] 5.1.6. E2Eテストの追加（Playwright）
 - [x] ~~5.1.7. Storybookの追加とコンポーネントのStory実装~~ (Storybook利用中止)
+- [x] 5.1.8. Fix type error in vitest.config.ts
 
 ## 6. デプロイメントとメンテナンス
 

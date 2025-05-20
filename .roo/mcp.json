@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "roo-activity-logger": {
+      "command": "pnpm",
+      "args": [
+        "dlx",
+        "github:annenpolka/roo-logger#f116fa56d288664e923fdd8ef6bb6c3515f1d828"
+      ],
+      "env": {},
+      "disabled": false
+    }
+  }
+}

@@ -63,5 +63,9 @@
   },
   "lint-staged": {
     "**/*": "prettier --write --ignore-unknown"
+  },
+  "engines": {
+    "node": "22.15.1",
+    "pnpm": "10.11.0"
   }
 }

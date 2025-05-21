@@ -8,21 +8,6 @@
       ],
       "env": {},
       "disabled": false
-    },
-    "allpepper-memory-bank": {
-      "command": "pnpm",
-      "args": ["dlx", "@allpepper/memory-bank-mcp@0.2.1"],
-      "env": {
-        "MEMORY_BANK_ROOT": ".memory_bank"
-      },
-      "disabled": false,
-      "autoApprove": [
-        "memory_bank_read",
-        "memory_bank_write",
-        "memory_bank_update",
-        "list_projects",
-        "list_project_files"
-      ]
     }
   }
 }

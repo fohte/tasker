@@ -19,6 +19,10 @@ This file provides guidance to LLMs (like [Claude Code](claude.ai/code)) when wo
   ```
 
 - **NEVER** disable tests or checks to make commits pass; always fix the underlying issues
+- **SHOULD** create a new branch from master when working on a task
+- **SHOULD** create a draft PR for the new branch
+- **SHOULD** use the `gh` command when interacting with the GitHub API
+- **SHOULD** name branches starting with the agent name, e.g., `roo/<name>` or `codex/<name>`
 
 ## Build & Development Commands
 

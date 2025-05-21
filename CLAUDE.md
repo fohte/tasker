@@ -4,7 +4,7 @@ This file provides guidance to LLMs (like [Claude Code](claude.ai/code)) when wo
 
 ## Implementation Guidelines
 
-- **MUST** follow steps after each task
+- **MUST** follow steps after each task if the task is based on a `docs/todo.md` item
   - Update `docs/todo.md` (mark as done)
   - Commit all changes (use `git add .` to stage all changes, including new files and folders)
   - Run the test using `pnpm run test` and fix if it fails

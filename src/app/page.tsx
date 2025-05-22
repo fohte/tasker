@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { TaskList } from '@/components/TaskList'
@@ -9,7 +8,6 @@ import { useTasks } from '@/lib/hooks'
 import { taskMutations } from '@/lib/hooks'
 
 export default function Home() {
-  const router = useRouter()
   const [newTaskText, setNewTaskText] = useState('')
   const [searchTerm, setSearchTerm] = useState('')
   const [isCreatingTask, setIsCreatingTask] = useState(false)

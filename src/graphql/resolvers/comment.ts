@@ -1,9 +1,4 @@
-import {
-  GraphQLContext,
-  Comment,
-  CreateCommentInput,
-  UpdateCommentInput,
-} from '../types'
+import { GraphQLContext, Comment, CreateCommentInput } from '../types'
 import { tasks } from '@/db/schema'
 import { eq } from 'drizzle-orm'
 

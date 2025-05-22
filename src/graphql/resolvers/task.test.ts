@@ -1,5 +1,4 @@
-// @ts-nocheck
-import { describe, expect, it, vi, beforeEach, test, assert } from 'vitest'
+import { describe, expect, it, vi, beforeEach, assert } from 'vitest'
 import { GraphQLContext, Task } from '../types'
 
 // vi.hoisted() を使用してモック変数をトップレベルで宣言

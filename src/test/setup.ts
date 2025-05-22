@@ -12,10 +12,10 @@ afterEach(() => {
 
 // SWRのモック
 vi.mock('swr', async () => {
-  const actual = await vi.importActual<any>('swr')
+  const actual = await vi.importActual<Record<string, unknown>>('swr')
   return {
     ...actual,
-    default: vi.fn().mockImplementation((...args: any[]) => {
+    default: vi.fn().mockImplementation((...args: unknown[]) => {
       const hookResult = actual.default ? actual.default(...args) : {}
       // デフォルトのモック値で上書き
       return {

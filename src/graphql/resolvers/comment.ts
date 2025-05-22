@@ -11,11 +11,7 @@ import { eq } from 'drizzle-orm'
 
 export const commentResolvers = {
   Query: {
-    comments: async (
-      _: unknown,
-      args: { taskId: string },
-      ctx: GraphQLContext
-    ) => {
+    comments: async () => {
       // コメントテーブルがまだ存在しないため、空の配列を返す
       return []
     },
@@ -60,20 +56,12 @@ export const commentResolvers = {
       return newComment
     },
 
-    updateComment: async (
-      _: unknown,
-      args: { id: number; input: UpdateCommentInput },
-      ctx: GraphQLContext
-    ) => {
+    updateComment: async () => {
       // コメントテーブルがまだないため、null を返す
       return null
     },
 
-    deleteComment: async (
-      _: unknown,
-      args: { id: number },
-      ctx: GraphQLContext
-    ) => {
+    deleteComment: async () => {
       // コメントテーブルがまだないため、null を返す
       return null
     },
@@ -85,8 +73,8 @@ export const commentResolvers = {
 
       // Comment型では task が必須だが、実行時に undefined の可能性がある
       // TypeScriptの型システムでは解決できないので、実装側で対応
-      // エラーを回避するためにparent.task as any を使用
-      const taskId = (parent.task as any)?.id
+      // エラーを回避するためにparent.task as unknown を使用
+      const taskId = (parent.task as unknown as { id?: string })?.id
 
       if (!taskId) {
         throw new Error('Comment is missing task ID')

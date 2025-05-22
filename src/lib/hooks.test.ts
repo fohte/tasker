@@ -1,5 +1,5 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { renderHook, act } from '@testing-library/react'
+import { renderHook } from '@testing-library/react'
 import { useTasks, useTask, taskMutations } from './hooks'
 import { graphqlClient } from './client'
 
@@ -22,7 +22,7 @@ vi.mock('./client', () => ({
 // SWRのモック（実際のフックテストには、実際のSWRの動作をモックする必要があります）
 vi.mock('swr', () => {
   return {
-    default: vi.fn((...args) => {
+    default: vi.fn(() => {
       return {
         data: undefined,
         error: undefined,

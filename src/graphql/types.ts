@@ -1,4 +1,4 @@
-import { Task as DbTask } from '@/db/schema'
+// Removed unused DbTask import
 
 // GraphQLのリゾルバーで使用する型定義
 export interface Task {

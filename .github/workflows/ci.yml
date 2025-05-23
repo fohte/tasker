@@ -7,8 +7,17 @@ jobs:
   test:
     runs-on: ubuntu-latest
     steps:
+      - name: Create GitHub App Token
+        id: app-token
+        uses: actions/create-github-app-token@v1
+        with:
+          app-id: ${{ secrets.APP_ID }}
+          private-key: ${{ secrets.APP_PRIVATE_KEY }}
+
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          token: ${{ steps.app-token.outputs.token }}
 
       - name: Setup mise
         uses: jdx/mise-action@v2
@@ -31,6 +40,25 @@ jobs:
 
       - name: Install Dependencies
         run: pnpm install --frozen-lockfile
+
+      - name: Run pre-commit
+        id: pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files || true
+
+      - id: files-formatted
+        run: |
+          echo "formatted=$(git diff-index --quiet HEAD && echo false || echo true)" >> "$GITHUB_OUTPUT"
+
+      - name: Commit formatted files
+        if: steps.files-formatted.outputs.formatted == 'true'
+        run: |
+          git config user.email '139195068+fohte-bot[bot]@users.noreply.github.com'
+          git config user.name 'fohte-bot[bot]'
+          git add -A
+          git commit -m 'style: $ pre-commit run --all-files'
+          git push
 
       - name: Run Tests
         run: pnpm run test

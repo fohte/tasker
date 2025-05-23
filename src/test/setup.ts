@@ -17,13 +17,15 @@ vi.mock('swr', async () => {
     ...actual,
     default: vi.fn().mockImplementation((...args: Parameters<typeof actual.default>) => {
       const hookResult = actual.default(...args)
-      // デフォルトのモック値で上書き
+      // デフォルトのモック値を先に設定し、実際の結果で上書き
       return {
-        data: undefined,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: vi.fn(),
+        ...{
+          data: undefined,
+          error: undefined,
+          isLoading: false,
+          isValidating: false,
+          mutate: vi.fn(),
+        },
         ...hookResult,
       }
     }),

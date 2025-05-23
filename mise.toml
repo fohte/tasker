@@ -1,5 +1,6 @@
 [tools]
 node = "22.15.1"
+pnpm = "10.11.0"
 
 [env]
 # Environment variables can be defined here if needed

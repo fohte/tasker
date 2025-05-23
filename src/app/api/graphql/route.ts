@@ -4,6 +4,7 @@ import { join } from 'path'
 import { resolvers } from '@/graphql/resolvers'
 import { db } from '@/db'
 import { makeExecutableSchema } from '@graphql-tools/schema'
+import type { GraphQLSchema } from 'graphql'
 
 // スキーマファイルの読み込み
 const typeDefs = readFileSync(
@@ -19,7 +20,7 @@ const schema = makeExecutableSchema({
 
 // Yogaサーバーを作成
 const { handleRequest } = createYoga({
-  schema,
+  schema: schema as GraphQLSchema,
   // リクエストのたびにコンテキストを生成
   context: async () => {
     return {
@@ -33,6 +34,14 @@ const { handleRequest } = createYoga({
 })
 
 // Next.jsのAPIルートハンドラー
-export const GET = handleRequest
-export const POST = handleRequest
-export const OPTIONS = handleRequest
+export async function GET(request: Request) {
+  return handleRequest(request, {})
+}
+
+export async function POST(request: Request) {
+  return handleRequest(request, {})
+}
+
+export async function OPTIONS(request: Request) {
+  return handleRequest(request, {})
+}

@@ -117,7 +117,6 @@ vi.mock('../validators', () => {
 import { taskResolvers } from './task'
 
 describe('Task Resolvers', () => {
-
   beforeEach(() => {
     vi.clearAllMocks()
   })
@@ -170,10 +169,7 @@ describe('Task Resolvers', () => {
           return Promise.resolve(mockTasks)
         })
 
-        const result = await taskResolvers.Query.tasks(
-          {},
-          { search: 'Sample' }
-        )
+        const result = await taskResolvers.Query.tasks({}, { search: 'Sample' })
 
         expect(mockSearchTasks).toHaveBeenCalledWith('Sample')
         expect(result).toHaveLength(1)
@@ -219,10 +215,7 @@ describe('Task Resolvers', () => {
         }
         mockGetTaskById.mockResolvedValueOnce(mockTask)
 
-        const result = await taskResolvers.Query.tasks(
-          {},
-          { labelId: 1 }
-        )
+        const result = await taskResolvers.Query.tasks({}, { labelId: 1 })
 
         expect(result).toHaveLength(1)
         expect(result[0].id).toBe('task1')
@@ -241,10 +234,7 @@ describe('Task Resolvers', () => {
 
         mockGetTaskById.mockResolvedValueOnce(mockTask)
 
-        const result = await taskResolvers.Query.task(
-          {},
-          { id: 'task1' }
-        )
+        const result = await taskResolvers.Query.task({}, { id: 'task1' })
 
         expect(mockGetTaskById).toHaveBeenCalledWith('task1')
         expect(result?.id).toBe('task1')
@@ -254,10 +244,7 @@ describe('Task Resolvers', () => {
       it('returns null when task is not found', async () => {
         mockGetTaskById.mockResolvedValueOnce(null)
 
-        const result = await taskResolvers.Query.task(
-          {},
-          { id: 'nonexistent' }
-        )
+        const result = await taskResolvers.Query.task({}, { id: 'nonexistent' })
 
         expect(result).toBeNull()
       })
@@ -276,10 +263,7 @@ describe('Task Resolvers', () => {
 
         mockCreateTask.mockResolvedValueOnce(true)
 
-        const result = await taskResolvers.Mutation.createTask(
-          {},
-          { input }
-        )
+        const result = await taskResolvers.Mutation.createTask({}, { input })
 
         expect(mockCreateTask).toHaveBeenCalledWith(
           expect.objectContaining({
@@ -308,10 +292,7 @@ describe('Task Resolvers', () => {
 
         await taskResolvers.Mutation.createTask({}, { input })
 
-        expect(mockCreateTaskLink).toHaveBeenCalledWith(
-          'parent1',
-          'test-uuid'
-        )
+        expect(mockCreateTaskLink).toHaveBeenCalledWith('parent1', 'test-uuid')
       })
     })
 
@@ -368,10 +349,7 @@ describe('Task Resolvers', () => {
 
         await taskResolvers.Mutation.updateTask({}, { id, input })
 
-        expect(mockUpdateParent).toHaveBeenCalledWith(
-          'task1',
-          'newParent'
-        )
+        expect(mockUpdateParent).toHaveBeenCalledWith('task1', 'newParent')
       })
 
       it('returns null when task is not found', async () => {
@@ -440,9 +418,7 @@ describe('Task Resolvers', () => {
 
         mockGetParentTask.mockResolvedValueOnce(mockParent)
 
-        const result = await taskResolvers.Task.parent(
-          mockTask
-        )
+        const result = await taskResolvers.Task.parent(mockTask)
 
         expect(mockGetParentTask).toHaveBeenCalledWith('task1')
         expect(result?.id).toBe('parent1')
@@ -452,9 +428,7 @@ describe('Task Resolvers', () => {
       it('returns null when parent task is not found', async () => {
         mockGetParentTask.mockResolvedValueOnce(null)
 
-        const result = await taskResolvers.Task.parent(
-          mockTask
-        )
+        const result = await taskResolvers.Task.parent(mockTask)
 
         expect(result).toBeNull()
       })
@@ -481,9 +455,7 @@ describe('Task Resolvers', () => {
 
         mockGetChildTasks.mockResolvedValueOnce(mockChildren)
 
-        const result = await taskResolvers.Task.children(
-          mockTask
-        )
+        const result = await taskResolvers.Task.children(mockTask)
 
         expect(mockGetChildTasks).toHaveBeenCalledWith('task1')
         expect(result).toHaveLength(2)
@@ -501,9 +473,7 @@ describe('Task Resolvers', () => {
 
         mockGetLabelsByTaskId.mockResolvedValueOnce(mockLabels)
 
-        const result = await taskResolvers.Task.labels(
-          mockTask
-        )
+        const result = await taskResolvers.Task.labels(mockTask)
 
         expect(mockGetLabelsByTaskId).toHaveBeenCalledWith('task1')
         expect(result).toHaveLength(2)

@@ -12,21 +12,25 @@ afterEach(() => {
 
 // SWRのモック
 vi.mock('swr', async () => {
-  const actual = await vi.importActual<any>('swr')
+  const actual = await vi.importActual<typeof import('swr')>('swr')
   return {
     ...actual,
-    default: vi.fn().mockImplementation((...args: any[]) => {
-      const hookResult = actual.default ? actual.default(...args) : {}
-      // デフォルトのモック値で上書き
-      return {
-        data: undefined,
-        error: undefined,
-        isLoading: false,
-        isValidating: false,
-        mutate: vi.fn(),
-        ...hookResult,
-      }
-    }),
+    default: vi
+      .fn()
+      .mockImplementation((...args: Parameters<typeof actual.default>) => {
+        const hookResult = actual.default(...args)
+        // デフォルトのモック値を先に設定し、実際の結果で上書き
+        return {
+          ...{
+            data: undefined,
+            error: undefined,
+            isLoading: false,
+            isValidating: false,
+            mutate: vi.fn(),
+          },
+          ...hookResult,
+        }
+      }),
   }
 })
 

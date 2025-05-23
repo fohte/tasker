@@ -1,5 +1,3 @@
-import { Task as DbTask } from '@/db/schema'
-
 // GraphQLのリゾルバーで使用する型定義
 export interface Task {
   id: string

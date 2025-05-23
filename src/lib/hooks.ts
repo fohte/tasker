@@ -12,7 +12,7 @@ import {
 // GraphQLのフェッチャー関数
 const graphqlFetcher = async <T>(
   query: string,
-  variables?: any
+  variables?: Record<string, unknown>
 ): Promise<T> => {
   return graphqlClient.request<T>(query, variables)
 }

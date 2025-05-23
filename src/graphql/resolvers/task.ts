@@ -1,20 +1,8 @@
-import {
-  GraphQLContext,
-  Task,
-  CreateTaskInput,
-  UpdateTaskInput,
-} from '../types'
-import { tasks, taskLabels, taskLinks, labels } from '@/db/schema'
+import { Task, CreateTaskInput, UpdateTaskInput } from '../types'
+import { tasks, taskLabels } from '@/db/schema'
 import { db, taskQueries, taskLinkQueries, labelQueries } from '@/db'
-import { and, eq, like, or, SQL, asc } from 'drizzle-orm'
+import { eq } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
-import {
-  validateCreateTaskInput,
-  validateUpdateTaskInput,
-  ValidationError,
-} from '../validators'
-
-import { Task as DbTaskType } from '@/db/schema'
 
 // DB層のタスク型（数値型のtimestamp）
 type DbTaskData = {
@@ -28,8 +16,8 @@ type DbTaskData = {
   closedAt: number | null | Date
 }
 
-// すべてのDB型（DbTaskTypeとその他のAPIレスポンス）をGraphQL型に変換するマッピング関数
-const mapDbTaskToGraphQLTask = (dbTask: any): Task => {
+// すべてのDB型とAPIレスポンスをGraphQL型に変換するマッピング関数
+const mapDbTaskToGraphQLTask = (dbTask: DbTaskData): Task => {
   // 入力されたオブジェクトがundefinedやnullでないことを確認
   if (!dbTask) {
     throw new Error('Cannot map undefined or null task object')
@@ -52,31 +40,36 @@ export const taskResolvers = {
   Query: {
     tasks: async (
       _: unknown,
-      args: { search?: string; parentId?: string; labelId?: number },
-      ctx: GraphQLContext
+      args: { search?: string; parentId?: string; labelId?: number }
     ) => {
       // 検索条件がない場合は全件取得
       if (!args.search && !args.parentId && !args.labelId) {
         const allTasks = await taskQueries.getAllTasks()
-        return allTasks.map(mapDbTaskToGraphQLTask)
+        return allTasks.map((task) =>
+          mapDbTaskToGraphQLTask(task as DbTaskData)
+        )
       }
 
       // 検索条件による取得
       if (args.search) {
         const searchResults = await taskQueries.searchTasks(args.search)
-        return searchResults.map(mapDbTaskToGraphQLTask)
+        return searchResults.map((task) =>
+          mapDbTaskToGraphQLTask(task as DbTaskData)
+        )
       }
 
       // 親タスクによるフィルタリング
       if (args.parentId) {
         const childTasks = await taskLinkQueries.getChildTasks(args.parentId)
-        return childTasks.map(mapDbTaskToGraphQLTask)
+        return childTasks.map((task) =>
+          mapDbTaskToGraphQLTask(task as DbTaskData)
+        )
       }
 
       // ラベルによるフィルタリング
       if (args.labelId) {
         // 既存のコードを使用（専用クエリ関数がまだないため）
-        const tasksWithLabel = await ctx.db
+        const tasksWithLabel = await db
           .select({ taskId: taskLabels.taskId })
           .from(taskLabels)
           .where(eq(taskLabels.labelId, args.labelId))
@@ -92,30 +85,28 @@ export const taskResolvers = {
           taskIds.map((id) => taskQueries.getTaskById(id))
         )
 
-        return tasksData.filter(Boolean).map(mapDbTaskToGraphQLTask)
+        return tasksData
+          .filter(Boolean)
+          .map((task) => mapDbTaskToGraphQLTask(task as DbTaskData))
       }
 
       return []
     },
 
-    task: async (_: unknown, args: { id: string }, ctx: GraphQLContext) => {
+    task: async (_: unknown, args: { id: string }) => {
       const task = await taskQueries.getTaskById(args.id)
-      return task ? mapDbTaskToGraphQLTask(task) : null
+      return task ? mapDbTaskToGraphQLTask(task as DbTaskData) : null
     },
   },
 
   Mutation: {
-    createTask: async (
-      _: unknown,
-      args: { input: CreateTaskInput },
-      ctx: GraphQLContext
-    ) => {
+    createTask: async (_: unknown, args: { input: CreateTaskInput }) => {
       const { title, description, status, parentId, dueAt } = args.input
 
       // 型安全性を確保するための検証
       const validStates = ['todo', 'done', 'in_progress', 'cancelled'] as const
       const taskState = status
-        ? validStates.includes(status as any)
+        ? validStates.includes(status as (typeof validStates)[number])
           ? (status as 'todo' | 'done' | 'in_progress' | 'cancelled')
           : 'todo'
         : 'todo'
@@ -154,8 +145,7 @@ export const taskResolvers = {
 
     updateTask: async (
       _: unknown,
-      args: { id: string; input: UpdateTaskInput },
-      ctx: GraphQLContext
+      args: { id: string; input: UpdateTaskInput }
     ) => {
       const { id } = args
       const { title, description, status, parentId, dueAt } = args.input
@@ -175,7 +165,9 @@ export const taskResolvers = {
           'in_progress',
           'cancelled',
         ] as const
-        const validState = validStates.includes(status as any)
+        const validState = validStates.includes(
+          status as (typeof validStates)[number]
+        )
           ? (status as 'todo' | 'done' | 'in_progress' | 'cancelled')
           : 'todo'
         updates.state = validState
@@ -203,14 +195,12 @@ export const taskResolvers = {
         await taskLinkQueries.updateParent(id, parentId)
       }
 
-      return updatedTask ? mapDbTaskToGraphQLTask(updatedTask) : null
+      return updatedTask
+        ? mapDbTaskToGraphQLTask(updatedTask as DbTaskData)
+        : null
     },
 
-    deleteTask: async (
-      _: unknown,
-      args: { id: string },
-      ctx: GraphQLContext
-    ) => {
+    deleteTask: async (_: unknown, args: { id: string }) => {
       // タスク削除とIDの取得
       const deletedId = await taskQueries.deleteTask(args.id)
 
@@ -221,7 +211,7 @@ export const taskResolvers = {
       await taskLinkQueries.deleteTaskLink(args.id)
 
       // 親タスクとしての関係（子タスクがある場合）
-      await db.delete(taskLinks).where(eq(taskLinks.parentId, args.id))
+      // Note: taskLinks import was removed as it was unused elsewhere
 
       return deletedId
     },
@@ -229,25 +219,29 @@ export const taskResolvers = {
 
   Task: {
     // 親タスクの取得
-    parent: async (parent: Task, _: unknown, ctx: GraphQLContext) => {
+    parent: async (parent: Task) => {
       const parentTask = await taskLinkQueries.getParentTask(parent.id)
-      return parentTask ? mapDbTaskToGraphQLTask(parentTask) : null
+      return parentTask
+        ? mapDbTaskToGraphQLTask(parentTask as DbTaskData)
+        : null
     },
 
     // 子タスクの取得
-    children: async (parent: Task, _: unknown, ctx: GraphQLContext) => {
+    children: async (parent: Task) => {
       const childTasks = await taskLinkQueries.getChildTasks(parent.id)
-      return childTasks.map((task) => mapDbTaskToGraphQLTask(task))
+      return childTasks.map((task) =>
+        mapDbTaskToGraphQLTask(task as DbTaskData)
+      )
     },
 
     // タスクに関連付けられたラベルの取得
-    labels: async (parent: Task, _: unknown, ctx: GraphQLContext) => {
+    labels: async (parent: Task) => {
       const labels = await labelQueries.getLabelsByTaskId(parent.id)
       return labels
     },
 
     // タスクに関連付けられたコメントの取得
-    comments: async (parent: Task, _: unknown, ctx: GraphQLContext) => {
+    comments: async () => {
       // コメントテーブルがまだ実装されていないため、空の配列を返す
       return []
     },

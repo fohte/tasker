@@ -1,7 +1,6 @@
 'use client'
 
 import { useState } from 'react'
-import { useRouter } from 'next/navigation'
 import { cn } from '@/lib/utils'
 import { Button } from '@/components/ui/button'
 import { taskMutations } from '@/lib/hooks'
@@ -66,7 +65,6 @@ export function TaskItem({
   onDelete,
   compact = false,
 }: TaskItemProps) {
-  const router = useRouter()
   const [isUpdating, setIsUpdating] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
   const [error, setError] = useState<string | null>(null)

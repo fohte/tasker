@@ -10,7 +10,7 @@ interface Env {
 
 // Cloudflareの環境変数を拡張
 declare global {
-  interface CloudflareEnv extends Env {}
+  // eslint-disable-next-line no-var
   var __env__: Partial<Env> | undefined
 }
 
@@ -23,7 +23,7 @@ function getD1Binding(): D1Database {
     if (env?.DB) {
       return env.DB
     }
-  } catch (e) {
+  } catch {
     // Ignore errors if not in a Pages Function context
   }
 

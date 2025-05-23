@@ -60,5 +60,8 @@ jobs:
           git commit -m 'style: $ pre-commit run --all-files'
           git push
 
+      - name: Run Lint
+        run: pnpm run lint
+
       - name: Run Tests
         run: pnpm run test

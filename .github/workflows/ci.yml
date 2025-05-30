@@ -53,7 +53,7 @@ jobs:
       - name: Commit formatted files
         uses: suzuki-shunsuke/commit-action@v0.0.7
         with:
-          commit_message: 'style: auto-format [ci skip]'
+          commit_message: 'style: auto-format'
           workflow: deny
           token: ${{ steps.app-token.outputs.token }}
 

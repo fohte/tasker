@@ -2,7 +2,7 @@
 
 個人の小さなタスクからプロジェクトのような規模の大きいタスクまで管理する self-hosted 前提の Web アプリケーション
 
-## docs   
+## docs
 
 - [todo.md](docs/todo.md)
 - architecture

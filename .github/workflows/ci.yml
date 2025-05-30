@@ -55,7 +55,7 @@ jobs:
         with:
           commit_message: 'style: auto-format'
           workflow: deny
-          token: ${{ steps.app-token.outputs.token }}
+          github_token: ${{ steps.app-token.outputs.token }}
 
       - name: Run Lint
         run: pnpm run lint

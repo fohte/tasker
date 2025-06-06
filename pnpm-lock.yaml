@@ -26,8 +26,8 @@ importers:
         specifier: 2.1.1
         version: 2.1.1
       drizzle-orm:
-        specifier: 0.43.1
-        version: 0.43.1(@cloudflare/workers-types@4.20250524.0)
+        specifier: 0.44.2
+        version: 0.44.2(@cloudflare/workers-types@4.20250524.0)
       graphql:
         specifier: 16.11.0
         version: 16.11.0
@@ -3756,10 +3756,10 @@ packages:
       }
     hasBin: true
 
-  drizzle-orm@0.43.1:
+  drizzle-orm@0.44.2:
     resolution:
       {
-        integrity: sha512-dUcDaZtE/zN4RV/xqGrVSMpnEczxd5cIaoDeor7Zst9wOe/HzC/7eAaulywWGYXdDEc9oBPMjayVEDg0ziTLJA==,
+        integrity: sha512-zGAqBzWWkVSFjZpwPOrmCrgO++1kZ5H/rZ4qTGeGOe18iXGVJWf3WPfHOVwFIbmi8kHjfJstC6rJomzGx8g/dQ==,
       }
     peerDependencies:
       '@aws-sdk/client-rds-data': '>=3'
@@ -3776,6 +3776,7 @@ packages:
       '@types/better-sqlite3': '*'
       '@types/pg': '*'
       '@types/sql.js': '*'
+      '@upstash/redis': '>=1.34.7'
       '@vercel/postgres': '>=0.8.0'
       '@xata.io/client': '*'
       better-sqlite3: '>=7'
@@ -3818,6 +3819,8 @@ packages:
       '@types/pg':
         optional: true
       '@types/sql.js':
+        optional: true
+      '@upstash/redis':
         optional: true
       '@vercel/postgres':
         optional: true
@@ -9652,7 +9655,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  drizzle-orm@0.43.1(@cloudflare/workers-types@4.20250524.0):
+  drizzle-orm@0.44.2(@cloudflare/workers-types@4.20250524.0):
     optionalDependencies:
       '@cloudflare/workers-types': 4.20250524.0
 

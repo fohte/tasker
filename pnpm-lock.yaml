@@ -11,8 +11,8 @@ importers:
         specifier: 1.13.12
         version: 1.13.12(@cloudflare/workers-types@4.20250614.0)(vercel@42.2.0(rollup@4.41.1))(wrangler@4.18.0(@cloudflare/workers-types@4.20250614.0))
       '@dotenvx/dotenvx':
-        specifier: 1.44.1
-        version: 1.44.1
+        specifier: 1.44.2
+        version: 1.44.2
       '@radix-ui/react-slot':
         specifier: 1.2.3
         version: 1.2.3(@types/react@19.1.8)(react@19.1.0)
@@ -476,10 +476,10 @@ packages:
       }
     engines: { node: '>=18' }
 
-  '@dotenvx/dotenvx@1.44.1':
+  '@dotenvx/dotenvx@1.44.2':
     resolution:
       {
-        integrity: sha512-j1QImCqf/XJmhIjC1OPpgiZV9g370HG9MNT9s/CDwCKsoYzNCPEKK+GfsidahJx7yIlBbm+4dPLlGec+bKn7oA==,
+        integrity: sha512-2C44+G2dch4cB6zw7+oGQ9VcFQuuVhc5xOzfVvY7iUEj2PRhiVMIB6SpNMK1V5TvpdqrAqCYFjclK18Mh9vwNQ==,
       }
     hasBin: true
 
@@ -7872,7 +7872,7 @@ snapshots:
 
   '@csstools/css-tokenizer@3.0.4': {}
 
-  '@dotenvx/dotenvx@1.44.1':
+  '@dotenvx/dotenvx@1.44.2':
     dependencies:
       commander: 11.1.0
       dotenv: 16.5.0

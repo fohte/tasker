@@ -1,7 +1,7 @@
 ## システムアーキテクチャ
 
 - App
-  - Next.js (App Router) + Node.js (pnpm)
+  - Next.js (App Router) + Node.js (Bun)
   - ORM: Drizzle
   - TypeScript
   - スタイル: Tailwind CSS + shadcn/ui

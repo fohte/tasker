@@ -12,6 +12,6 @@ repos:
     hooks:
       - id: prettier
         name: prettier
-        entry: pnpm exec prettier --write --ignore-unknown
+        entry: bun x prettier --write --ignore-unknown
         language: system
         pass_filenames: true

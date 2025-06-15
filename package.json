@@ -2,7 +2,7 @@
   "name": "app",
   "version": "0.1.0",
   "private": true,
-  "packageManager": "bun@1.1.45",
+  "packageManager": "bun@latest",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",

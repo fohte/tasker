@@ -7,18 +7,17 @@ permissions:
   contents: write
 
 jobs:
-  test:
+  pre-commit:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Create GitHub App Token
+      - uses: actions/create-github-app-token@v2
         id: app-token
-        uses: actions/create-github-app-token@v2
         with:
           app-id: ${{ secrets.APP_ID }}
           private-key: ${{ secrets.APP_PRIVATE_KEY }}
 
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
         with:
           persist-credentials: false
 
@@ -41,21 +40,57 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-pnpm-store-
 
-      - name: Install Dependencies
-        run: pnpm install --frozen-lockfile
+      - run: pnpm install --frozen-lockfile
+
+      - name: Cache pre-commit
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pre-commit
+          key: ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pre-commit-${{ hashFiles('.pre-commit-config.yaml') }}
+            ${{ runner.os }}-pre-commit-
 
       - name: Run pre-commit
         id: pre-commit
         run: |
           pip install pre-commit
-          pre-commit run --all-files || true
+          pre-commit run --all-files
 
       - name: Commit formatted files
+        if: ${{ !cancelled() }}
         uses: suzuki-shunsuke/commit-action@v0.0.7
         with:
           commit_message: 'style: auto-format'
           workflow: deny
           github_token: ${{ steps.app-token.outputs.token }}
+
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup mise
+        uses: jdx/mise-action@v2
+        with:
+          install: true
+
+      - name: Get pnpm store directory
+        id: pnpm-cache
+        shell: bash
+        run: |
+          echo "store-path=$(pnpm store path --silent)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/cache@v4
+        name: Setup pnpm cache
+        with:
+          path: ${{ steps.pnpm-cache.outputs.store-path }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
+      - run: pnpm install --frozen-lockfile
 
       - name: Run Lint
         run: pnpm run lint

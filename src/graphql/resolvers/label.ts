@@ -1,11 +1,12 @@
+import { eq } from 'drizzle-orm'
+
+import { labels, taskLabels, tasks } from '@/db/schema'
 import {
+  CreateLabelInput,
   GraphQLContext,
   Label,
-  CreateLabelInput,
   UpdateLabelInput,
-} from '../types'
-import { labels, taskLabels, tasks } from '@/db/schema'
-import { eq } from 'drizzle-orm'
+} from '@/graphql/types'
 
 // ラベルデータの変換
 const mapDbLabelToGraphQLLabel = (

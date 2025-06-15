@@ -1,5 +1,6 @@
-import { defineConfig } from 'drizzle-kit'
 import '@dotenvx/dotenvx/config' // Use dotenvx
+
+import { defineConfig } from 'drizzle-kit'
 
 if (!process.env.CLOUDFLARE_ACCOUNT_ID) {
   throw new Error('CLOUDFLARE_ACCOUNT_ID environment variable is not set')

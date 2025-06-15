@@ -1,13 +1,14 @@
 'use client'
 
-import useSWR, { SWRResponse, SWRConfiguration } from 'swr'
+import useSWR, { SWRConfiguration, SWRResponse } from 'swr'
+
 import {
   graphqlClient,
-  queries,
   mutations,
-  TasksQueryResult,
+  queries,
   TaskQueryResult,
-} from './client'
+  TasksQueryResult,
+} from '@/lib/client'
 
 // GraphQLのフェッチャー関数
 const graphqlFetcher = async <T>(

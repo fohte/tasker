@@ -1,6 +1,7 @@
-import { describe, expect, it, vi } from 'vitest'
 import { render, screen } from '@testing-library/react'
-import { TaskList } from './TaskList'
+import { describe, expect, it, vi } from 'vitest'
+
+import { TaskList } from '@/components/TaskList'
 import { useTasks } from '@/lib/hooks'
 
 // Hooksのモック

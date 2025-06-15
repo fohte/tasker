@@ -1,6 +1,7 @@
-import { GraphQLContext, Comment, CreateCommentInput } from '../types'
-import { tasks } from '@/db/schema'
 import { eq } from 'drizzle-orm'
+
+import { tasks } from '@/db/schema'
+import { Comment, CreateCommentInput, GraphQLContext } from '@/graphql/types'
 
 // コメントテーブルはまだ作成されていないため、仮のリゾルバーを実装
 

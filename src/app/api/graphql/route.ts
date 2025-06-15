@@ -1,10 +1,11 @@
-import { createYoga } from 'graphql-yoga'
-import { readFileSync } from 'fs'
-import { join } from 'path'
-import { resolvers } from '@/graphql/resolvers'
-import { db } from '@/db'
 import { makeExecutableSchema } from '@graphql-tools/schema'
+import { readFileSync } from 'fs'
 import type { GraphQLSchema } from 'graphql'
+import { createYoga } from 'graphql-yoga'
+import { join } from 'path'
+
+import { db } from '@/db'
+import { resolvers } from '@/graphql/resolvers'
 
 // スキーマファイルの読み込み
 const typeDefs = readFileSync(

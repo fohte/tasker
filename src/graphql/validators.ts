@@ -1,4 +1,4 @@
-import { CreateTaskInput, UpdateTaskInput } from './types'
+import { CreateTaskInput, UpdateTaskInput } from '@/graphql/types'
 
 // バリデーションエラー型
 export class ValidationError extends Error {

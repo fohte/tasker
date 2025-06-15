@@ -1,10 +1,11 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
 import { renderHook } from '@testing-library/react'
-import { useTasks, useTask, taskMutations } from './hooks'
-import { graphqlClient } from './client'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import { graphqlClient } from '@/lib/client'
+import { taskMutations, useTask, useTasks } from '@/lib/hooks'
 
 // graphqlClientのモック
-vi.mock('./client', () => ({
+vi.mock('@/lib/client', () => ({
   graphqlClient: {
     request: vi.fn(),
   },

@@ -1,6 +1,2 @@
 [tools]
-node = "22.16.0"
-pnpm = "10.11.0"
-
-[env]
-# Environment variables can be defined here if needed
+bun = "1.2.16"

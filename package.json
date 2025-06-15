@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "type": "module",
-  "packageManager": "pnpm@10.11.0",
+  "packageManager": "bun@1.2.16",
   "scripts": {
     "dev": "next dev --turbopack",
     "build": "next build",
@@ -12,11 +12,11 @@
     "lint:next": "next lint",
     "format:eslint": "eslint --fix .",
     "format:prettier": "prettier --write .",
-    "format": "pnpm run format:eslint && pnpm run format:prettier",
+    "format": "bun run format:eslint && bun run format:prettier",
     "db:generate": "drizzle-kit generate",
     "db:migrate": "drizzle-kit migrate",
     "db:studio": "drizzle-kit studio",
-    "test": "pnpm run --sequential '/test:.*/'",
+    "test": "concurrently -g --max-processes 1 \"bun run test:unit\" \"bun run test:type\"",
     "test:unit": "vitest run --project unit",
     "test:type": "tsc --noEmit",
     "test:typecheck": "tsc --noEmit"

@@ -1,4 +1,6 @@
 // GraphQLのリゾルバーで使用する型定義
+import { drizzle } from 'drizzle-orm/d1'
+
 export interface Task {
   id: string
   title: string
@@ -62,8 +64,6 @@ export interface CreateCommentInput {
 export interface UpdateCommentInput {
   content: string
 }
-
-import { drizzle } from 'drizzle-orm/d1'
 
 // コンテキスト型
 export interface GraphQLContext {

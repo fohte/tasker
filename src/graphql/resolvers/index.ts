@@ -1,6 +1,6 @@
-import { taskResolvers } from './task'
-import { labelResolvers } from './label'
-import { commentResolvers } from './comment'
+import { commentResolvers } from '@/graphql/resolvers/comment'
+import { labelResolvers } from '@/graphql/resolvers/label'
+import { taskResolvers } from '@/graphql/resolvers/task'
 
 // すべてのリゾルバーをマージ
 export const resolvers = {

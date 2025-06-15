@@ -4,14 +4,25 @@ repos:
     hooks:
       - id: end-of-file-fixer
       - id: trailing-whitespace
+        args: [--markdown-linebreak-ext=md, --markdown-linebreak-ext=mdx]
+
   - repo: https://github.com/editorconfig-checker/editorconfig-checker.python
     rev: 3.2.1
     hooks:
       - id: editorconfig-checker
+
   - repo: local
     hooks:
+      - id: eslint
+        name: ESLint
+        entry: bun x eslint --fix
+        language: system
+        files: \.(m?jsx?|tsx?)$
+        pass_filenames: true
+
       - id: prettier
-        name: prettier
+        name: Prettier
         entry: bun x prettier --write --ignore-unknown
         language: system
+        types: [file]
         pass_filenames: true

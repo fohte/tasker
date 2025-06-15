@@ -1,5 +1,8 @@
-import { describe, expect, it, vi, beforeEach, assert } from 'vitest'
-import { Task } from '../types'
+import { assert, beforeEach, describe, expect, it, vi } from 'vitest'
+
+// モジュールのインポートはvi.mockの後に行う必要があります
+import { taskResolvers } from '@/graphql/resolvers/task'
+import { Task } from '@/graphql/types'
 
 // vi.hoisted() を使用してモック変数をトップレベルで宣言
 // これにより、モックのホイスティングの問題を解決
@@ -105,16 +108,13 @@ vi.mock('uuid', () => {
 })
 
 // バリデーターのモック
-vi.mock('../validators', () => {
+vi.mock('@/graphql/validators', () => {
   return {
     validateCreateTaskInput: vi.fn().mockImplementation((input) => input),
     validateUpdateTaskInput: vi.fn().mockImplementation((input) => input),
     ValidationError: class ValidationError extends Error {},
   }
 })
-
-// モジュールのインポートはvi.mockの後に行う必要があります
-import { taskResolvers } from './task'
 
 describe('Task Resolvers', () => {
   beforeEach(() => {

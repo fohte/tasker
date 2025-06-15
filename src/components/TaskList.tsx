@@ -1,7 +1,7 @@
 'use client'
 
-import { useTasks } from '@/lib/hooks'
 import { TaskItem } from '@/components/TaskItem'
+import { useTasks } from '@/lib/hooks'
 
 // タスクリストコンポーネント
 interface TaskListProps {

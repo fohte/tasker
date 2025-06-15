@@ -1,6 +1,6 @@
 [tools]
 node = "22.16.0"
-bun = "latest"
+bun = "1.2.16"
 
 [env]
 # Environment variables can be defined here if needed

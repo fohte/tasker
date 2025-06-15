@@ -1,8 +1,9 @@
-import { Task, CreateTaskInput, UpdateTaskInput } from '../types'
-import { tasks, taskLabels } from '@/db/schema'
-import { db, taskQueries, taskLinkQueries, labelQueries } from '@/db'
 import { eq } from 'drizzle-orm'
 import { v4 as uuidv4 } from 'uuid'
+
+import { db, labelQueries, taskLinkQueries, taskQueries } from '@/db'
+import { taskLabels, tasks } from '@/db/schema'
+import { CreateTaskInput, Task, UpdateTaskInput } from '@/graphql/types'
 
 // DB層のタスク型（数値型のtimestamp）
 type DbTaskData = {

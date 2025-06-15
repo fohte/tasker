@@ -1,7 +1,8 @@
-import { drizzle } from 'drizzle-orm/d1'
 import { getRequestContext } from '@cloudflare/next-on-pages'
-import { eq, lt, ne, like, and } from 'drizzle-orm'
-import { tasks, labels, taskLabels, taskLinks } from './schema'
+import { and, eq, like, lt, ne } from 'drizzle-orm'
+import { drizzle } from 'drizzle-orm/d1'
+
+import { labels, taskLabels, taskLinks, tasks } from '@/db/schema'
 
 // Cloudflare環境の型定義
 interface Env {
@@ -53,7 +54,7 @@ function getD1Binding(): D1Database {
 export const db = drizzle(getD1Binding())
 
 // Re-export schema items if needed elsewhere
-export * from './schema'
+export * from '@/db/schema'
 
 // タスク関連のクエリ関数
 export const taskQueries = {

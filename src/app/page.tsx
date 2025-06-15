@@ -1,11 +1,11 @@
 'use client'
 
 import { useState } from 'react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
+
 import { TaskList } from '@/components/TaskList'
-import { useTasks } from '@/lib/hooks'
-import { taskMutations } from '@/lib/hooks'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { taskMutations, useTasks } from '@/lib/hooks'
 
 export default function Home() {
   const [newTaskText, setNewTaskText] = useState('')

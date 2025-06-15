@@ -1,6 +1,12 @@
-import { describe, expect, it, vi, beforeEach } from 'vitest'
-import { render, screen, fireEvent } from '@testing-library/react'
-import { TaskItem, getStatusColor, formatDate, TaskItemProps } from './TaskItem'
+import { fireEvent, render, screen } from '@testing-library/react'
+import { beforeEach, describe, expect, it, vi } from 'vitest'
+
+import {
+  formatDate,
+  getStatusColor,
+  TaskItem,
+  TaskItemProps,
+} from '@/components/TaskItem'
 import { taskMutations } from '@/lib/hooks'
 
 // タスクミューテーションのモック

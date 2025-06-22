@@ -166,9 +166,14 @@ jobs:
         id: extract-url
         run: |
           echo "${{ steps.cloudflare-deployment.outputs.command-output }}" > deployment-output.txt
-          # Extract the deployment URL from wrangler output
-          DEPLOYMENT_URL=$(grep -o 'https://[^[:space:]]*\.workers\.dev' deployment-output.txt | head -1)
-          echo "deployment-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
+          # Extract the version preview URL from wrangler output
+          # Look for "Version Preview URL:" pattern first
+          PREVIEW_URL=$(grep -o 'Version Preview URL: https://[^[:space:]]*\.workers\.dev' deployment-output.txt | sed 's/Version Preview URL: //' | head -1)
+          # If no preview URL found, fallback to any workers.dev URL
+          if [ -z "$PREVIEW_URL" ]; then
+            PREVIEW_URL=$(grep -o 'https://[^[:space:]]*-tasker[^[:space:]]*\.workers\.dev' deployment-output.txt | head -1)
+          fi
+          echo "deployment-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
       - name: Update deployment status
         if: always()
@@ -177,7 +182,7 @@ jobs:
           token: ${{ github.token }}
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
           state: ${{ job.status }}
-          environment-url: ${{ steps.extract-url.outputs.deployment-url || (github.ref == 'refs/heads/master' && 'https://tasker-production.workers.dev' || '') }}
+          environment-url: ${{ steps.extract-url.outputs.deployment-url || (github.ref == 'refs/heads/master' && 'https://tasker.workers.dev' || '') }}
           log-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
   migrate:

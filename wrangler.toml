@@ -17,16 +17,10 @@ database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
 [vars]
 NEXT_PUBLIC_API_URL = "/api/graphql"
 
-# For development/preview deployments
-[env.preview]
-name = "tasker-preview"
-
-[env.preview.vars]
-NODE_ENV = "development"
-
-# For production deployments
+# Environment-specific configurations
 [env.production]
-name = "tasker-production"
+# Use the same worker name for all environments
+# Cloudflare automatically handles preview URLs
 
 [env.production.vars]
 NODE_ENV = "production"

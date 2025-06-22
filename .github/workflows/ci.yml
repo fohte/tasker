@@ -166,13 +166,20 @@ jobs:
         id: extract-url
         run: |
           echo "${{ steps.cloudflare-deployment.outputs.command-output }}" > deployment-output.txt
-          # Extract the version preview URL from wrangler output
-          # Look for "Version Preview URL:" pattern first
-          PREVIEW_URL=$(grep -o 'Version Preview URL: https://[^[:space:]]*\.workers\.dev' deployment-output.txt | sed 's/Version Preview URL: //' | head -1)
-          # If no preview URL found, fallback to any workers.dev URL
-          if [ -z "$PREVIEW_URL" ]; then
-            PREVIEW_URL=$(grep -o 'https://[^[:space:]]*-tasker[^[:space:]]*\.workers\.dev' deployment-output.txt | head -1)
+
+          # Extract version ID from output
+          VERSION_ID=$(grep -o 'Current Version ID: [a-f0-9-]*' deployment-output.txt | sed 's/Current Version ID: //')
+
+          if [ -n "$VERSION_ID" ]; then
+            # Construct preview URL from version ID
+            # Format: https://<8-char-prefix>-<worker-name>.<subdomain>.workers.dev
+            VERSION_PREFIX=$(echo "$VERSION_ID" | cut -c1-8)
+            PREVIEW_URL="https://${VERSION_PREFIX}-tasker.fohte.workers.dev"
+          else
+            # Fallback to extracting any URL from output
+            PREVIEW_URL=$(grep -o 'https://[^[:space:]]*\.workers\.dev' deployment-output.txt | head -1)
           fi
+
           echo "deployment-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
 
       - name: Update deployment status

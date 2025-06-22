@@ -13,14 +13,20 @@ binding = "DB"
 database_name = "tasker"
 database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
 
-# Environment variables can be set here or in GitHub Secrets
-# [vars]
-# EXAMPLE_VAR = "example_value"
+# Environment variables
+[vars]
+NEXT_PUBLIC_API_URL = "/api/graphql"
 
 # For development/preview deployments
 [env.preview]
 name = "tasker-preview"
 
+[env.preview.vars]
+NODE_ENV = "development"
+
 # For production deployments
 [env.production]
 name = "tasker-production"
+
+[env.production.vars]
+NODE_ENV = "production"

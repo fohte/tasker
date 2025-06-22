@@ -10,8 +10,8 @@ binding = "ASSETS"
 
 [[d1_databases]]
 binding = "DB"
-database_name = "tasker-db"
-database_id = "YOUR_DATABASE_ID" # Replace with actual database ID
+database_name = "tasker"
+database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
 
 # Environment variables can be set here or in GitHub Secrets
 # [vars]

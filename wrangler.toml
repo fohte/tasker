@@ -16,6 +16,7 @@ database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
 # Environment variables
 [vars]
 NEXT_PUBLIC_API_URL = "/api/graphql"
+NEXT_PUBLIC_VERSION_ID = "local-development"
 
 # Environment-specific configurations
 [env.production]

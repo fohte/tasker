@@ -1,0 +1,26 @@
+# Cloudflare Workers configuration for tasker
+name = "tasker"
+main = ".open-next/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tasker-db"
+database_id = "YOUR_DATABASE_ID" # Replace with actual database ID
+
+# Environment variables can be set here or in GitHub Secrets
+# [vars]
+# EXAMPLE_VAR = "example_value"
+
+# For development/preview deployments
+[env.preview]
+name = "tasker-preview"
+
+# For production deployments
+[env.production]
+name = "tasker-production"

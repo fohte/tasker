@@ -29,5 +29,11 @@ NODE_ENV = "production"
 [env.preview]
 # Preview environment for feature branches
 
+[[env.preview.d1_databases]]
+binding = "DB"
+database_name = "tasker"
+database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
+
 [env.preview.vars]
 NODE_ENV = "preview"
+NEXT_PUBLIC_API_URL = "/api/graphql"

@@ -18,6 +18,6 @@ database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
 NEXT_PUBLIC_API_URL = "/api/graphql"
 NEXT_PUBLIC_VERSION_ID = "local-development"
 
-# Note: We don't use environment-specific configurations
-# All deployments use the same worker name "tasker"
-# Preview URLs are automatically generated using version IDs
+# Note: Worker name is dynamically set in CI/CD
+# Production: tasker.fohte.workers.dev
+# Preview: <branch-name>-tasker.fohte.workers.dev

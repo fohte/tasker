@@ -151,39 +151,36 @@ jobs:
       - name: Build for Cloudflare
         run: bun run opennextjs-cloudflare build
 
+      - name: Prepare deployment name
+        id: deployment-name
+        run: |
+          if [ "${{ github.ref }}" == "refs/heads/master" ]; then
+            echo "worker-name=tasker" >> $GITHUB_OUTPUT
+          else
+            # Normalize branch name for subdomain (replace / with -, remove special chars)
+            BRANCH_NAME=$(echo "${{ github.ref_name }}" | sed 's/[^a-zA-Z0-9-]/-/g' | sed 's/--*/-/g' | sed 's/^-//;s/-$//')
+            echo "worker-name=${BRANCH_NAME}-tasker" >> $GITHUB_OUTPUT
+          fi
+
       - name: Deploy to Cloudflare Workers
         id: cloudflare-deployment
         uses: cloudflare/wrangler-action@v3
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          # Deploy without affecting production URL on non-master branches
-          command: ${{ github.ref == 'refs/heads/master' && 'deploy' || 'versions upload' }} --var NEXT_PUBLIC_VERSION_ID:${{ github.sha }}
+          command: deploy --name ${{ steps.deployment-name.outputs.worker-name }} --var NEXT_PUBLIC_VERSION_ID:${{ github.sha }}
         env:
           CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
 
       - name: Extract deployment URL
-        if: github.ref != 'refs/heads/master'
         id: extract-url
         run: |
-          cat << 'EOF' > deployment-output.txt
-          ${{ steps.cloudflare-deployment.outputs.command-output }}
-          EOF
-
-          # Extract version ID from output
-          VERSION_ID=$(grep -o 'Current Version ID: [a-f0-9-]*' deployment-output.txt | sed 's/Current Version ID: //')
-
-          if [ -n "$VERSION_ID" ]; then
-            # Construct preview URL from version ID
-            # Format: https://<8-char-prefix>-<worker-name>.<subdomain>.workers.dev
-            VERSION_PREFIX=$(echo "$VERSION_ID" | cut -c1-8)
-            PREVIEW_URL="https://${VERSION_PREFIX}-tasker.fohte.workers.dev"
+          if [ "${{ github.ref }}" == "refs/heads/master" ]; then
+            DEPLOYMENT_URL="https://tasker.fohte.workers.dev"
           else
-            # Fallback to extracting any URL from output
-            PREVIEW_URL=$(grep -o 'https://[^[:space:]]*\.workers\.dev' deployment-output.txt | head -1)
+            DEPLOYMENT_URL="https://${{ steps.deployment-name.outputs.worker-name }}.fohte.workers.dev"
           fi
-
-          echo "deployment-url=$PREVIEW_URL" >> $GITHUB_OUTPUT
+          echo "deployment-url=$DEPLOYMENT_URL" >> $GITHUB_OUTPUT
 
       - name: Update deployment status
         if: always()
@@ -192,7 +189,7 @@ jobs:
           token: ${{ github.token }}
           deployment-id: ${{ steps.deployment.outputs.deployment_id }}
           state: ${{ job.status }}
-          environment-url: ${{ steps.extract-url.outputs.deployment-url || (github.ref == 'refs/heads/master' && 'https://tasker.workers.dev' || '') }}
+          environment-url: ${{ steps.extract-url.outputs.deployment-url }}
           log-url: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
 
   migrate:

@@ -165,7 +165,9 @@ jobs:
         if: github.ref != 'refs/heads/master'
         id: extract-url
         run: |
-          echo "${{ steps.cloudflare-deployment.outputs.command-output }}" > deployment-output.txt
+          cat << 'EOF' > deployment-output.txt
+          ${{ steps.cloudflare-deployment.outputs.command-output }}
+          EOF
 
           # Extract version ID from output
           VERSION_ID=$(grep -o 'Current Version ID: [a-f0-9-]*' deployment-output.txt | sed 's/Current Version ID: //')

@@ -11,9 +11,14 @@ const getGitCommitHash = () => {
   }
 }
 
+// Get app version from environment variable or fall back to git commit hash
+const getAppVersion = () => {
+  return process.env.APP_VERSION || getGitCommitHash()
+}
+
 const nextConfig: NextConfig = {
   env: {
-    NEXT_PUBLIC_GIT_COMMIT_HASH: getGitCommitHash(),
+    NEXT_PUBLIC_APP_VERSION: getAppVersion(),
   },
 }
 

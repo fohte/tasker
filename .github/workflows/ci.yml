@@ -157,7 +157,8 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          command: deploy ${{ github.ref == 'refs/heads/master' && '--env production' || '--env preview' }} --var NEXT_PUBLIC_VERSION_ID:${{ github.sha }}
+          # Deploy without affecting production URL on non-master branches
+          command: ${{ github.ref == 'refs/heads/master' && 'deploy' || 'versions upload' }} --var NEXT_PUBLIC_VERSION_ID:${{ github.sha }}
         env:
           CLOUDFLARE_DATABASE_ID: ${{ secrets.CLOUDFLARE_DATABASE_ID }}
 

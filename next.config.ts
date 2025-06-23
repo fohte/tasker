@@ -25,7 +25,9 @@ const nextConfig: NextConfig = {
 
 // Initialize OpenNext Cloudflare adapter for development
 if (process.env.NODE_ENV === 'development') {
-  await initOpenNextCloudflareForDev()
+  ;(async () => {
+    await initOpenNextCloudflareForDev()
+  })()
 }
 
 export default nextConfig

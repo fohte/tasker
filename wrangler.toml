@@ -25,3 +25,9 @@ NEXT_PUBLIC_VERSION_ID = "local-development"
 
 [env.production.vars]
 NODE_ENV = "production"
+
+[env.preview]
+# Preview environment for feature branches
+
+[env.preview.vars]
+NODE_ENV = "preview"

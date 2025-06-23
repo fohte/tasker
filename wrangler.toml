@@ -1,0 +1,23 @@
+# Cloudflare Workers configuration for tasker
+name = "tasker"
+main = ".open-next/worker.js"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[assets]
+directory = ".open-next/assets"
+binding = "ASSETS"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "tasker"
+database_id = "f1bec4cc-5260-4e7d-91de-b802e18ba291"
+
+# Environment variables
+[vars]
+NEXT_PUBLIC_API_URL = "/api/graphql"
+NEXT_PUBLIC_VERSION_ID = "local-development"
+
+# Note: Worker name is dynamically set in CI/CD
+# Production: tasker.fohte.workers.dev
+# Preview: <branch-name>-tasker.fohte.workers.dev

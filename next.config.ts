@@ -1,3 +1,4 @@
+import { initOpenNextCloudflareForDev } from '@opennextjs/cloudflare'
 import { execSync } from 'child_process'
 import type { NextConfig } from 'next'
 
@@ -20,6 +21,13 @@ const nextConfig: NextConfig = {
   env: {
     NEXT_PUBLIC_APP_VERSION: getAppVersion(),
   },
+}
+
+// Initialize OpenNext Cloudflare adapter for development
+if (process.env.NODE_ENV === 'development') {
+  ;(async () => {
+    await initOpenNextCloudflareForDev()
+  })()
 }
 
 export default nextConfig
